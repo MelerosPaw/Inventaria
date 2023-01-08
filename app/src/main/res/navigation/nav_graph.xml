@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation android:id="@+id/nav_graph"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  app:startDestination="@id/item_list_fragment">
+
+  <fragment
+    android:id="@+id/item_list_fragment"
+    android:name="meleros.paw.inventory.ui.ItemListFragment"
+    android:label="@string/item_list_fragment_label"
+    tools:layout="@layout/fragment_item_list">
+
+    <action
+      android:id="@+id/action_item_list_to_create"
+      app:destination="@id/CreateItemFragment" />
+
+    <action
+      android:id="@+id/action_item_list_to_detail"
+      app:destination="@id/DetailItemFragment" />
+
+  </fragment>
+
+  <fragment
+    android:id="@+id/CreateItemFragment"
+    android:name="meleros.paw.inventory.ui.CreateItemFragment"
+    android:label="@string/create_item_fragment_label"
+    tools:layout="@layout/fragment_create_item">
+
+    <!-- Must consider -1L as nullable value, since Long cannot be null according to SafeArgs -->
+    <argument
+      android:name="itemCreationDateForEdition"
+      android:defaultValue="-1L"
+      app:argType="long" />
+
+  </fragment>
+
+  <fragment
+    android:id="@+id/DetailItemFragment"
+    android:name="meleros.paw.inventory.ui.DetailItemFragment"
+    tools:layout="@layout/fragment_item_detail">
+
+    <argument
+      android:name="itemCreationDate"
+      app:argType="long" />
+
+    <action
+      android:id="@+id/action_detail_to_edition"
+      app:destination="@id/CreateItemFragment" />
+
+  </fragment>
+
+</navigation>

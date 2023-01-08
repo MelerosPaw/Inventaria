@@ -1,0 +1,27 @@
+<resources>
+  <string name="app_name">Inventaria</string>
+  <string name="item_list_fragment_label">@string/app_name</string>
+  <string name="item_list_fragment_label_on_selection_mode">Seleccionar items</string>
+  <string name="create_item_fragment_label">Nuevo objeto</string>
+  <string name="edit_item_fragment_label">Editar objeto</string>
+  <string name="save">Guardar</string>
+  <string name="edit">Editar</string>
+  <string name="name">Nombre</string>
+  <string name="description">Descripción</string>
+  <string name="error__item_name_missing">Hace falta un nombre</string>
+  <string name="select_picture">Seleccionar imagen</string>
+  <string name="take_picture">Hacer una foto</string>
+  <string name="sort_alphabetically">A-Z</string>
+  <string name="sort_by_quantity">Ordenar por cantidad</string>
+  <string name="sort_by_creation_date">Ordenar fecha de creación</string>
+  <string name="layout_list">Lista</string>
+  <string name="layout_grid">Cuadrícula</string>
+  <string name="content_description__add_item">Añadir artículo</string>
+  <string name="clear_selection">Deseleccionar todo</string>
+  <string name="select_everything">Seleccionar todo</string>
+  <string name="delete_items">Borrar items</string>
+  <string name="menu_option__sort">Ordenar</string>
+  <string name="menu_option__layout">Visualizar</string>
+  <string name="menu_option__select_items">Seleccionar</string>
+  <string name="menu_option__deselect_items">Deseleccionar</string>
+</resources>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+  <ImageView
+    android:id="@+id/framed_image_viewer__image__frame"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:background="@drawable/detail_picture_frame"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <ImageView
+    android:id="@+id/framed_image_viewer_img__item_picture"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_margin="12dp"
+    android:scaleType="centerCrop"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:src="@tools:sample/backgrounds/scenic" />
+
+  <Button
+    android:id="@+id/framed_image_viewer__label__select_image"
+    style="@style/FramedImageViewerButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:text="@string/select_picture"
+    app:drawableTopCompat="@android:drawable/ic_menu_gallery"
+    app:layout_constraintBottom_toBottomOf="@id/framed_image_viewer_img__item_picture"
+    app:layout_constraintEnd_toStartOf="@id/framed_image_viewer__label__take_picture"
+    app:layout_constraintHorizontal_chainStyle="spread"
+    app:layout_constraintStart_toStartOf="@id/framed_image_viewer_img__item_picture"
+    app:layout_constraintTop_toTopOf="@id/framed_image_viewer_img__item_picture" />
+
+  <Button
+    android:id="@+id/framed_image_viewer__label__take_picture"
+    style="@style/FramedImageViewerButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="10dp"
+    android:text="@string/take_picture"
+    app:drawableTopCompat="@android:drawable/ic_menu_camera"
+    app:layout_constraintBottom_toBottomOf="@id/framed_image_viewer_img__item_picture"
+    app:layout_constraintEnd_toEndOf="@id/framed_image_viewer_img__item_picture"
+    app:layout_constraintStart_toEndOf="@id/framed_image_viewer__label__select_image"
+    app:layout_constraintTop_toTopOf="@id/framed_image_viewer_img__item_picture" />
+
+</merge>

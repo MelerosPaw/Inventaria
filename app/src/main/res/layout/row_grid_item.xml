@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <!-- This view's height is not important, since it will be set in its adapter to be square. -->
+  <ImageView
+    android:id="@+id/img__item_photo"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:scaleType="centerCrop"
+    android:layout_margin="8dp"
+    app:layout_constraintVertical_bias="0"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:src="@tools:sample/avatars" />
+
+  <CheckBox
+    android:id="@+id/check__selected"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    app:layout_constraintBottom_toTopOf="@id/label__quantity"
+    app:layout_constraintEnd_toEndOf="@id/img__item_photo"
+    app:layout_constraintHorizontal_bias="1"
+    app:layout_constraintStart_toStartOf="@id/img__item_photo"
+    app:layout_constraintTop_toTopOf="@id/img__item_photo"
+    app:layout_constraintVertical_bias="0"
+    tools:visibility="visible" />
+
+  <TextView
+    android:id="@+id/label__quantity"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:background="@color/translucent_white"
+    android:maxLines="1"
+    android:paddingHorizontal="8dp"
+    android:textColor="?android:attr/colorPrimary"
+    android:textSize="16sp"
+    app:layout_constrainedHeight="true"
+    app:layout_constrainedWidth="true"
+    app:layout_constraintBottom_toBottomOf="@id/img__item_photo"
+    app:layout_constraintEnd_toEndOf="@id/img__item_photo"
+    app:layout_constraintHorizontal_bias="1"
+    app:layout_constraintStart_toStartOf="@id/img__item_photo"
+    app:layout_constraintTop_toTopOf="@id/img__item_photo"
+    app:layout_constraintVertical_bias="1"
+    tools:text="12" />
+
+  <TextView
+    android:id="@+id/label__item_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginTop="4dp"
+    android:gravity="center"
+    android:lines="2"
+    android:maxLines="2"
+    android:textAlignment="center"
+    android:textColor="?android:attr/colorPrimary"
+    android:textSize="14sp"
+    app:layout_constrainedHeight="true"
+    app:layout_constrainedWidth="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/img__item_photo"
+    tools:text="@tools:sample/cities" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

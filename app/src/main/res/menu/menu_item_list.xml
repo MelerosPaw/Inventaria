@@ -1,0 +1,71 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:context="meleros.paw.inventory.ui.MainActivity">
+
+  <item
+    android:orderInCategory="1"
+    android:title="@string/menu_option__sort"
+    app:showAsAction="never">
+
+    <menu>
+
+      <item
+        android:id="@+id/action_sort_alphabetically"
+        android:orderInCategory="1"
+        android:title="@string/sort_alphabetically"
+        app:showAsAction="never" />
+
+      <item
+        android:id="@+id/action_sort_by_quantity"
+        android:orderInCategory="2"
+        android:title="@string/sort_by_quantity"
+        app:showAsAction="never" />
+
+      <item
+        android:id="@+id/action_sort_by_creation_date"
+        android:orderInCategory="3"
+        android:title="@string/sort_by_creation_date"
+        app:showAsAction="never" />
+
+    </menu>
+
+  </item>
+
+  <item
+    android:orderInCategory="2"
+    android:title="@string/menu_option__layout"
+    app:showAsAction="never">
+
+    <menu>
+
+      <item
+        android:id="@+id/action_lay_out_as_list"
+        android:orderInCategory="1"
+        android:title="@string/layout_list"
+        app:showAsAction="never" />
+
+      <item
+        android:id="@+id/action_lay_out_as_grid"
+        android:orderInCategory="2"
+        android:title="@string/layout_grid"
+        app:showAsAction="never" />
+
+    </menu>
+
+  </item>
+
+  <item
+    android:id="@+id/action_select_items"
+    android:orderInCategory="3"
+    android:title="@string/menu_option__select_items"
+    app:showAsAction="never" />
+
+  <item
+    android:id="@+id/action_deselect_items"
+    android:orderInCategory="4"
+    android:title="@string/menu_option__deselect_items"
+    app:showAsAction="never"
+    android:visible="false"/>
+
+</menu>

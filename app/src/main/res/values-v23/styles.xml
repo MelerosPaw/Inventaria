@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="FramedImageViewerButton" parent="Widget.AppCompat.Button.Borderless.Colored">
+    <item name="android:background">@android:color/transparent</item>
+    <item name="android:drawableTint">?android:attr/colorPrimary</item>
+    <item name="android:textColor">?android:attr/colorPrimary</item>
+  </style>
+</resources>
