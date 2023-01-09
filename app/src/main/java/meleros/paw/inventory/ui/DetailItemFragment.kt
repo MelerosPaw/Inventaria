@@ -6,22 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.databinding.FragmentItemDetailBinding
-import meleros.paw.inventory.ui.viewmodel.ItemsViewModel
-import meleros.paw.inventory.ui.widget.FramedPhotoViewerView
+import meleros.paw.inventory.ui.viewmodel.ItemDetailViewModel
+import meleros.paw.inventory.ui.vo.ItemVO
 
 class DetailItemFragment : BaseFragment() {
 
   private var binding: FragmentItemDetailBinding? = null
   private val args: DetailItemFragmentArgs by navArgs()
-  private val viewModel: ItemsViewModel by activityViewModels()
+  private val viewModel: ItemDetailViewModel by viewModels()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    viewModel.loadItem(args.itemCreationDate)
+    viewModel.loadItemForDetail(args.itemCreationDate)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -34,16 +33,13 @@ class DetailItemFragment : BaseFragment() {
     super.onViewCreated(view, savedInstanceState)
 
     binding?.run {
-      viewModel.itemDetailLiveData.observe(viewLifecycleOwner) { event ->
-        event.get()?.let { item ->
-//          findNavController().currentDestination?.label = item.name
-          activity?.title = item.name
-          labelItemName.text = item.name
-          labelQuanitity.text = "${item.quantity}"
-          labelDescription.text = item.description
-          loadPicture(item.image)
-          setUpEditButton(item)
-        }
+      viewModel.itemDetailLiveData.observe(viewLifecycleOwner) { item ->
+        (activity as? TitleHolder)?.setTitleInToolbar(item.name)
+        labelItemName.text = item.name
+        labelQuanitity.text = item.quantity
+        labelDescription.text = item.description
+        loadPicture(item.image)
+        setUpEditButton(item)
       }
     }
   }
@@ -53,7 +49,7 @@ class DetailItemFragment : BaseFragment() {
     this.binding = null
   }
 
-  private fun FragmentItemDetailBinding.setUpEditButton(item: Item) {
+  private fun FragmentItemDetailBinding.setUpEditButton(item: ItemVO) {
     btnEditItem.setOnClickListener { navigateToEdit(item.creationDate) }
   }
 
@@ -61,19 +57,9 @@ class DetailItemFragment : BaseFragment() {
     navigate(DetailItemFragmentDirections.actionDetailToEdition(creationDate))
   }
 
-  private fun FragmentItemDetailBinding.loadPicture(imagePath: CharSequence?) {
+  private fun FragmentItemDetailBinding.loadPicture(imageUri: Uri?) {
     imageViewerPhoto.displayControls = false
-    imagePath?.let {
-      when (viewModel.getPictureOrigin(it)) {
-        FramedPhotoViewerView.Origin.CAMERA -> {
-          val uri = viewModel.createValidUri(it)
-          showImage(uri)
-        }
-        FramedPhotoViewerView.Origin.FILE_SYSTEM -> {
-//         val bitmap = viewModel.getPictureBitmap(it)
-        }
-      }
-    }
+    showImage(imageUri)
   }
 
   private fun FragmentItemDetailBinding.showImage(imageUri: Uri?) {

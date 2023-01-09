@@ -13,7 +13,7 @@
 
     <action
       android:id="@+id/action_item_list_to_create"
-      app:destination="@id/CreateItemFragment" />
+      app:destination="@id/EditItemFragment" />
 
     <action
       android:id="@+id/action_item_list_to_detail"
@@ -22,16 +22,19 @@
   </fragment>
 
   <fragment
-    android:id="@+id/CreateItemFragment"
-    android:name="meleros.paw.inventory.ui.CreateItemFragment"
+    android:id="@+id/EditItemFragment"
+    android:name="meleros.paw.inventory.ui.EditItemFragment"
     android:label="@string/create_item_fragment_label"
-    tools:layout="@layout/fragment_create_item">
+    tools:layout="@layout/fragment_edit_item">
 
-    <!-- Must consider -1L as nullable value, since Long cannot be null according to SafeArgs -->
+    <!-- Must consider -1L as nullable value, since Long cannot be null according to SafeArgs. -->
     <argument
       android:name="itemCreationDateForEdition"
       android:defaultValue="-1L"
       app:argType="long" />
+
+    <!--TODO Melero 11/1/23: Pasar también el nombre del item para setearlos directamente en la toolbar. Para el -->
+    <!--   resto de valores, poner el cargando. -->
 
   </fragment>
 
@@ -43,10 +46,11 @@
     <argument
       android:name="itemCreationDate"
       app:argType="long" />
+    <!--TODO Melero 11/1/23: Pasar también el nombre del item para setearlo directamente en la toolbar -->
 
     <action
       android:id="@+id/action_detail_to_edition"
-      app:destination="@id/CreateItemFragment" />
+      app:destination="@id/EditItemFragment" />
 
   </fragment>
 

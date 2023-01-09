@@ -6,19 +6,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import android.window.OnBackInvokedDispatcher
-import androidx.activity.viewModels
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.MenuProvider
 import meleros.paw.inventory.R
 import meleros.paw.inventory.databinding.ActivityMainBinding
-import meleros.paw.inventory.ui.viewmodel.ItemsViewModel
 
-class MainActivity : AppCompatActivity(), ItemListFragment.SelectionModeResponsive {
+class MainActivity : AppCompatActivity(), SelectionModeListener, TitleHolder {
 
   private lateinit var appBarConfiguration: AppBarConfiguration
   private lateinit var binding: ActivityMainBinding
@@ -46,6 +39,12 @@ class MainActivity : AppCompatActivity(), ItemListFragment.SelectionModeResponsi
     binding.toolbar.run {
       setTitle(toolbarTitle)
       setBackgroundColor(toolbarColor)
+    }
+  }
+
+  override fun setTitleInToolbar(title: CharSequence) {
+    binding.toolbar.run {
+      setTitle(title)
     }
   }
 }

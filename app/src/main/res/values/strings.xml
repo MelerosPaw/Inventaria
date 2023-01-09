@@ -3,7 +3,7 @@
   <string name="item_list_fragment_label">@string/app_name</string>
   <string name="item_list_fragment_label_on_selection_mode">Seleccionar items</string>
   <string name="create_item_fragment_label">Nuevo objeto</string>
-  <string name="edit_item_fragment_label">Editar objeto</string>
+  <string name="edit_item_fragment_label">Editando %1$s</string>
   <string name="save">Guardar</string>
   <string name="edit">Editar</string>
   <string name="name">Nombre</string>

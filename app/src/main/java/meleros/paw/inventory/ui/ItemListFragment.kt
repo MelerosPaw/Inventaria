@@ -25,7 +25,7 @@ import meleros.paw.inventory.extension.whenTrue
 import meleros.paw.inventory.ui.adapter.BaseItemAdapter
 import meleros.paw.inventory.ui.adapter.GridItemAdapter
 import meleros.paw.inventory.ui.adapter.ListItemAdapter
-import meleros.paw.inventory.ui.viewmodel.ItemsViewModel
+import meleros.paw.inventory.ui.viewmodel.ItemListViewModel
 import meleros.paw.inventory.ui.vo.ItemVO
 import java.lang.ref.WeakReference
 
@@ -33,7 +33,7 @@ class ItemListFragment : BaseFragment() {
 
   private var binding: FragmentItemListBinding? = null
   private var selectionBinding: SelectionFabMenuBinding? = null
-  private val viewModel: ItemsViewModel by activityViewModels()
+  private val viewModel: ItemListViewModel by activityViewModels()
   private var menuProvider: ItemListMenuProvider? = null
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -98,7 +98,7 @@ class ItemListFragment : BaseFragment() {
   }
 
   private fun setUpItemList() {
-    viewModel.itemLiveData.observe(viewLifecycleOwner) { items ->
+    viewModel.itemListLiveData.observe(viewLifecycleOwner) { items ->
       items?.let {
         drawItems(it)
 
@@ -108,7 +108,7 @@ class ItemListFragment : BaseFragment() {
       }
     }
     // TODO Melero 31/12/22: Habría simplemente que actualizar la lista con el item nuevo, no volverla a pintar entera
-    viewModel.itemCreatedLiveData.observe(viewLifecycleOwner) { it.whenTrue(false) { viewModel.loadItems() } }
+//    viewModel.itemEditionFinishedLiveData.observe(viewLifecycleOwner) { it.whenTrue(false) { viewModel.loadItems() } }
 
     // Esta comprobación es necesaria porque creo que, como estamos creando el view model con la activity, no se
     // destruye y se queda la lista que está guardada, actuando como caché. Si el view model se crease con el fragment,
@@ -124,7 +124,7 @@ class ItemListFragment : BaseFragment() {
     this.menuProvider = itemMenuProvider
   }
 
-  private fun drawItems(itemListUpdate: ItemsViewModel.ItemListUpdate) {
+  private fun drawItems(itemListUpdate: ItemListViewModel.ItemListUpdate) {
     binding?.listItems?.run {
       val items = itemListUpdate.newItems ?: itemListUpdate.currentItems
       val layout = itemListUpdate.layout
@@ -204,7 +204,7 @@ class ItemListFragment : BaseFragment() {
   private fun setUpToolbarForSelectionMode(isSelectionModeEnabled: Boolean) {
     val toolbarTitle = getToolbarTitleAccordingToSelectionModeEnabled(isSelectionModeEnabled)
     val toolbarColor = getToolbarColorAccordingToSelectionModeEnabled(isSelectionModeEnabled)
-    (activity as? SelectionModeResponsive)?.onSelectionModeChanged(toolbarTitle, toolbarColor)
+    (activity as? SelectionModeListener)?.onSelectionModeChanged(toolbarTitle, toolbarColor)
   }
 
   private fun setUpFabForSelectionMode(isSelectionModeEnabled: Boolean) {
@@ -269,7 +269,7 @@ class ItemListFragment : BaseFragment() {
     navigate(ItemListFragmentDirections.actionItemListToCreate())
   }
 
-  class ItemListMenuProvider(private val viewModel: ItemsViewModel? = null, fragment: ItemListFragment) : MenuProvider {
+  class ItemListMenuProvider(private val viewModel: ItemListViewModel? = null, fragment: ItemListFragment) : MenuProvider {
 
     private val fragmentWR = WeakReference(fragment)
     private var menu: Menu? = null
@@ -332,9 +332,5 @@ class ItemListFragment : BaseFragment() {
         setSelectionOptions(false)
       }
     }
-  }
-
-  interface SelectionModeResponsive {
-    fun onSelectionModeChanged(@StringRes toolbarTitle: Int, @ColorInt toolbarColor: Int)
   }
 }

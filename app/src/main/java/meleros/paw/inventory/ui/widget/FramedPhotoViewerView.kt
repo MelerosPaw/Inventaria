@@ -1,6 +1,7 @@
 package meleros.paw.inventory.ui.widget
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -50,15 +51,27 @@ class FramedPhotoViewerView @JvmOverloads constructor(
    * Hay que declarar e inicializar este objeto como campo de la clase que tenga la vista para que funcione el registro
    * del fragment para obtener resultados de activity.
    */
-  class Manager(fragment: Fragment, val onPhotoObtainedListener: (Origin, Uri) -> Unit) {
+  class Manager(
+    fragment: Fragment,
+    private val takePersistableUriPermission: Boolean = true,
+    val onPhotoObtainedListener: (Origin, Uri) -> Unit,
+  ) {
 
     private var picturesTakenUri: Uri? = null
-    private val takePictureLauncher: ActivityResultLauncher<Uri> = fragment.registerForActivityResult(ActivityResultContracts.TakePicture()) { isSaved ->
-      picturesTakenUri?.takeIf { isSaved }?.let { onPhotoObtainedListener(Origin.CAMERA, it) }
-    }
-    private val pickPhotoLauncher: ActivityResultLauncher<PickVisualMediaRequest> = fragment.registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { destinationUri ->
-      destinationUri?.let { onPhotoObtainedListener(Origin.FILE_SYSTEM, it) }
-    }
+    private val takePictureLauncher: ActivityResultLauncher<Uri> =
+      fragment.registerForActivityResult(ActivityResultContracts.TakePicture()) { isSaved ->
+        picturesTakenUri?.takeIf { isSaved }?.let { onPhotoObtainedListener(Origin.CAMERA, it) }
+      }
+    private val pickPhotoLauncher: ActivityResultLauncher<PickVisualMediaRequest> =
+      fragment.registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { destinationUri ->
+        destinationUri?.let {
+          // TODO Melero 9/1/23: Guardar esto en el manual de Android Pure
+          if (takePersistableUriPermission) {
+            fragment.context?.contentResolver?.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+          }
+          onPhotoObtainedListener(Origin.FILE_SYSTEM, it)
+        }
+      }
 
     fun takePhoto(context: Context) {
       picturesTakenUri = PicturesTakenFileProvider.getUriForNewPicture(context)

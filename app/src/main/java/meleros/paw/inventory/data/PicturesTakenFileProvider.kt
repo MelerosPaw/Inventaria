@@ -1,16 +1,12 @@
 package meleros.paw.inventory.data
 
-import android.R.attr.data
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.core.content.FileProvider
 import meleros.paw.inventory.BuildConfig
 import meleros.paw.inventory.R
 import java.io.File
-import java.io.FileInputStream
 
 
 class PicturesTakenFileProvider: FileProvider(R.xml.provider_paths) {
@@ -32,31 +28,13 @@ class PicturesTakenFileProvider: FileProvider(R.xml.provider_paths) {
       return getUriForFile(context, authority, photoFile)
     }
 
-    fun getUriForPicture(path: CharSequence, context: Context): Uri? {
-      val stringPath = path.toString()
-
-      val uri = Uri.Builder()
-          .scheme(scheme)
-          .authority(authority)
-          .path(stringPath)
-          .build()
-          .takeIf { it.exists(context) }
-
-      return uri
-    }
-
-    fun getBitmapFromUri(context: Context, imagePath: CharSequence) {
-//      val fileByteArray = ByteArray(uri.toString().length)
-//
-//      try {
-//        val fileInputStream: FileInputStream = context.contentResolver
-//          .openInputStream(uri) as FileInputStream
-//        fileInputStream.read(fileByteArray)
-//      } catch (e: java.lang.Exception) {
-//        e.printStackTrace()
-//      }
-//      Uri.parse(Uri.decode(imagePath.toString()))
-    }
+    fun getUriForPicture(path: CharSequence, context: Context): Uri? =
+      Uri.Builder()
+        .scheme(scheme)
+        .authority(authority)
+        .path(path.toString())
+        .build()
+        .takeIf { it.exists(context) }
 
     fun isFromCamera(path: CharSequence) = path.startsWith(picturesDirId)
 
