@@ -37,6 +37,7 @@ class ItemDetailViewModel(app: Application): BaseViewModel(app) {
   var itemPicturePath: String? = null
   private var creationDateForEdition: Long = -1
   var isInEditionMode: Boolean = false
+  var itemBeingEdited: Item? = null
 
   fun loadItemForDetail(creationDate: Long) {
     loadItem(creationDate) {
@@ -47,13 +48,13 @@ class ItemDetailViewModel(app: Application): BaseViewModel(app) {
   fun loadItemForEdition(creationDate: Long) {
     if (isInEditionMode) {
       loadItem(creationDate) {
-        // TODO Melero 11/1/23: Tal vez esto es lo que hace que se pierda la imagen
+        itemBeingEdited = it
         _itemEditionLiveData.value = it
       }
     }
   }
 
-  fun loadItem(creationDate: Long, callback: suspend (Item) -> Unit) {
+  private fun loadItem(creationDate: Long, callback: suspend (Item) -> Unit) {
     doWork {
       UCGetItem(UCGetItemDBOFlow(database))(creationDate).collect { item ->
         item?.let {
