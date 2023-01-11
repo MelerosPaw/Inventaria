@@ -8,5 +8,11 @@ class Item(
   val image: String? = null,
 ) {
 
+  companion object {
+    private const val INVALID_CREATION_DATE = -1L
+
+    fun isValidCreationDate(creationDate: Long) = creationDate != INVALID_CREATION_DATE
+  }
+
   override fun equals(other: Any?): Boolean = name == (other as? Item)?.name
 }

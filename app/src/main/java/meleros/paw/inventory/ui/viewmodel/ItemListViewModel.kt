@@ -1,120 +1,95 @@
 package meleros.paw.inventory.ui.viewmodel
 
 import android.app.Application
-import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.Toast
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import meleros.paw.inventory.InventoryApp
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.data.ItemListLayout
 import meleros.paw.inventory.data.ItemListSorting
-import meleros.paw.inventory.data.ItemListSorting.*
+import meleros.paw.inventory.data.ItemListSorting.ALPHABETICALLY
+import meleros.paw.inventory.data.ItemListSorting.ALPHABETICALLY_REVERSED
+import meleros.paw.inventory.data.ItemListSorting.GREATER_QUANTITY
+import meleros.paw.inventory.data.ItemListSorting.LESS_QUANTITY
+import meleros.paw.inventory.data.ItemListSorting.MOST_RECENT_FIRST
+import meleros.paw.inventory.data.ItemListSorting.OLDEST_FIRST
 import meleros.paw.inventory.data.PicturesTakenFileProvider
-import meleros.paw.inventory.data.db.InventoryDB
 import meleros.paw.inventory.data.mapper.toVo
+import meleros.paw.inventory.data.usecase.UCDeleteItems
+import meleros.paw.inventory.data.usecase.UCGetItems
 import meleros.paw.inventory.extension.ITEM_LIST_LAYOUT
 import meleros.paw.inventory.extension.ITEM_LIST_SORTING
 import meleros.paw.inventory.extension.dataStore
-import meleros.paw.inventory.ui.Event
-import meleros.paw.inventory.ui.viewmodel.usecase.UCCreateItems
-import meleros.paw.inventory.ui.viewmodel.usecase.UCDeleteItems
-import meleros.paw.inventory.ui.viewmodel.usecase.UCGetItem
-import meleros.paw.inventory.ui.viewmodel.usecase.UCGetItems
 import meleros.paw.inventory.ui.vo.ItemVO
 import meleros.paw.inventory.ui.widget.FramedPhotoViewerView
 import java.io.IOException
 
-class ItemsViewModel(app: Application): AndroidViewModel(app) {
+class ItemListViewModel(app: Application): BaseViewModel(app) {
 
-  // LiveData backing fields
+  //region Fields
+  // region LiveData backing fields
   private val _itemListLiveData: MutableLiveData<ItemListUpdate> = MutableLiveData()
-  private val _itemCreatedLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
-  private val _itemDetailLiveData: MutableLiveData<Event<Item>> = MutableLiveData()
-  private val _wipLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
+  // endregion
 
   // Would be injections
-  private val database: InventoryDB by lazy { getApplication<InventoryApp>().database }
   private val dataStore = app.applicationContext.dataStore
+  private var preferences: Preferences? = null
 
   // Exposed LiveData
-  val itemLiveData: LiveData<ItemListUpdate>
+  val itemListLiveData: LiveData<ItemListUpdate>
     get() = _itemListLiveData
-  val itemCreatedLiveData: LiveData<Event<Boolean>>
-    get() = _itemCreatedLiveData
-  val wipLiveData: LiveData<Event<Boolean>>
-    get() = _wipLiveData
-  val itemDetailLiveData: LiveData<Event<Item>>
-    get() = _itemDetailLiveData
 
+  //region Item List properties
   /**
    * Item list. Esta lista se le pasa al adapter, quien la usa directamente. Gracias a esto, Cuando se cambia el orden,
    * si está el modo selección habilitado, los items seleccionados se mantienen porque el adapter modifica esta misma
    * lista de forma referencial.
    */
   var currentVOs: List<ItemVO>? = null
-  /** When selecting a picture, the path to the picture will be saved here. */
-  var itemPicturePath: String? = null
-  /** Item displayed in DetailItemFragment. */
-  var itemDisplayedOnDetail: Item? = null
   /** The current list sorting so when layout is changed, no sorting is applied if it's already applied. */
   var currentSorting: ItemListSorting? = null
   var isInSelectionMode = false
     private set
   var isMenuOpen: Boolean = false
+  //endregion
+  //endregion
 
-  fun loadItems() {
+  init {
+    // Escucha las preferencias y las guarda para cuando cambie la lista, poder volver a aplicarlas sin que tengan que
+    // cambiar. Tal vez debería guardar los valores que nos interesan en lugar de las preferencias enteras.
     doWork {
-      UCGetItems(database)()
-        .mapToVO()
-        .let {
-          // Guarda la lista para poder pasarla cuando se produzca una modificación de alguna de las preferencias pero
-          // no de los items
-          currentVOs = it
-          setUpItemList()
+      dataStore.data
+        .catch { onErrorWhileReadingPreferences(it) }
+        .collect { preferences ->
+          this.preferences = preferences
+          currentVOs?.let { items -> postItemList(preferences, items) }
         }
     }
   }
 
-  fun loadItem(creationDate: Long) {
+  //region Public methods
+  /**
+   * Carga y cachea la lista para poder pasarla cuando se produzca una modificación de alguna de las preferencias no
+   * haya que volver a solicitarla ni depender de la lista que hay en el adapter.
+   */
+  fun loadItems() {
     doWork {
-      UCGetItem(database)(creationDate)?.let {
-        itemDisplayedOnDetail = it
-        _itemDetailLiveData.value = Event(it)
-      }
+      UCGetItems(database)()
+        .mapToVO()
+        .collect() { vos ->
+          currentVOs = vos
+          postItemList(preferences, vos)
+        }
     }
   }
-
-  fun createItem(name: CharSequence, description: CharSequence, quantity: Int, imagePath: CharSequence?) {
-    doWork {
-      val creationTime = System.currentTimeMillis()
-      val item = Item(name.toString(), description.toString(), quantity, creationTime, imagePath?.toString())
-      val created = UCCreateItems(database)(item)
-      _itemCreatedLiveData.value = Event(created)
-    }
-  }
-
-  fun createValidUri(imagePath: CharSequence): Uri? =
-    PicturesTakenFileProvider.getUriForPicture(imagePath, getApplication())
-
-  fun getPictureBitmap(imagePath: CharSequence) =
-    PicturesTakenFileProvider.getBitmapFromUri(getApplication(), imagePath)
-
-  fun getPictureOrigin(imagePath: CharSequence): FramedPhotoViewerView.Origin =
-    if (PicturesTakenFileProvider.isFromCamera(imagePath)) {
-      FramedPhotoViewerView.Origin.CAMERA
-    } else {
-      FramedPhotoViewerView.Origin.FILE_SYSTEM
-    }
 
   fun setSelectionModeEnabled(enabled: Boolean) {
     isInSelectionMode = enabled
@@ -166,7 +141,9 @@ class ItemsViewModel(app: Application): AndroidViewModel(app) {
   fun layOutItemsAsList() {
     changeItemListLayout(ItemListLayout.LIST)
   }
+  //endregion
 
+  //region Private methods
   private fun changeItemListLayout(layout: ItemListLayout) {
     doWork(false) {
       dataStore.edit {
@@ -180,9 +157,19 @@ class ItemsViewModel(app: Application): AndroidViewModel(app) {
   private fun getSelectedItemIds(): List<Long> =
     currentVOs?.mapNotNull { vo -> vo.creationDate.takeIf { vo.isSelected } }.orEmpty()
 
-  private fun List<Item>.mapToVO(): List<ItemVO> = map { item ->
-    val imageUri = item.image?.let(::createValidUri)
-    item.toVo(imageUri)
+  private fun Flow<List<Item>>.mapToVO(): Flow<List<ItemVO>> = map { list ->
+    list.map { item ->
+      val imageUri = item.image?.let {
+        // TODO Melero 9/1/23: Extraer la lógica de leer URI a un sitio común
+        if (PicturesTakenFileProvider.isFromCamera(it)) {
+          PicturesTakenFileProvider.getUriForPicture(it, getApplication())
+        } else {
+          Uri.parse(it)
+        }
+      }
+
+      item.toVo(imageUri)
+    }
   }
 
   private fun changeSorting(provideSortingType: (oldSorting: ItemListSorting) -> ItemListSorting) {
@@ -222,14 +209,8 @@ class ItemsViewModel(app: Application): AndroidViewModel(app) {
     return ItemListLayout.values()[layout]
   }
 
-  private suspend fun setUpItemList() {
-    dataStore.data
-      .catch { onErrorWhileReadingPreferences(it) }
-      .collect { currentVOs?.let { items -> postItemList(it, items) } }
-  }
-
-  private suspend fun postItemList(it: Preferences, items: List<ItemVO>) {
-    _itemListLiveData.value = processItems(it, items)
+  private suspend fun postItemList(preferences: Preferences?, items: List<ItemVO>) {
+    preferences?.let { _itemListLiveData.value = processItems(it, items) }
   }
 
   private fun onErrorWhileReadingPreferences(it: Throwable) {
@@ -250,18 +231,7 @@ class ItemsViewModel(app: Application): AndroidViewModel(app) {
 
     ItemListUpdate(layout, sortedList, currentVOs)
   }
-
-  private fun doWork(loading: Boolean = true, block: suspend () -> Unit) {
-    viewModelScope.launch {
-      if (loading) {
-        _wipLiveData.value = Event(true)
-        block()
-        _wipLiveData.value = Event(false)
-      } else {
-        block()
-      }
-    }
-  }
+  //endregion
 
   class ItemListUpdate(
     /** The list's layout */

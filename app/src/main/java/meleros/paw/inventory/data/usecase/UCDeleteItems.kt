@@ -1,4 +1,4 @@
-package meleros.paw.inventory.ui.viewmodel.usecase
+package meleros.paw.inventory.data.usecase
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
