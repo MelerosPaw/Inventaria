@@ -21,7 +21,6 @@ import meleros.paw.inventory.R
 import meleros.paw.inventory.data.ItemListLayout
 import meleros.paw.inventory.databinding.FragmentItemListBinding
 import meleros.paw.inventory.databinding.SelectionFabMenuBinding
-import meleros.paw.inventory.extension.whenTrue
 import meleros.paw.inventory.ui.adapter.BaseItemAdapter
 import meleros.paw.inventory.ui.adapter.GridItemAdapter
 import meleros.paw.inventory.ui.adapter.ListItemAdapter
@@ -218,7 +217,7 @@ class ItemListFragment : BaseFragment() {
 
   @DrawableRes
   private fun getFabIconAccordingToSelectionMode(isSelectionModeEnabled: Boolean): Int =
-    android.R.drawable.ic_delete.takeIf { isSelectionModeEnabled } ?: android.R.drawable.ic_input_add
+    android.R.drawable.ic_menu_agenda.takeIf { isSelectionModeEnabled } ?: android.R.drawable.ic_input_add
 
   @StringRes
   private fun getToolbarTitleAccordingToSelectionModeEnabled(isSelectionModeEnabled: Boolean): Int =
@@ -273,45 +272,31 @@ class ItemListFragment : BaseFragment() {
 
     private val fragmentWR = WeakReference(fragment)
     private var menu: Menu? = null
+    private var menuInflater: MenuInflater? = null
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-      menuInflater.inflate(R.menu.menu_item_list, menu)
       this.menu = menu
+      this.menuInflater = menuInflater
+      menuInflater.inflate(R.menu.menu_item_list, menu)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
       return when (menuItem.itemId) {
-        R.id.action_sort_by_quantity -> {
-          viewModel?.sortItemsByQuantity(); true
-        }
-        R.id.action_sort_alphabetically -> {
-          viewModel?.sortItemsAlphabetically(); true
-        }
-        R.id.action_sort_by_creation_date -> {
-          viewModel?.sortItemsByCreationDate(); true
-        }
-        R.id.action_lay_out_as_list -> {
-          viewModel?.layOutItemsAsList(); true
-        }
-        R.id.action_lay_out_as_grid -> {
-          viewModel?.layOutItemsAsGrid(); true
-        }
-        R.id.action_select_items -> {
-          enterSelectionMode(); true
-        }
-        R.id.action_deselect_items -> {
-          exitSelectionMode(); true
-        }
+        R.id.action_sort_by_quantity -> { viewModel?.sortItemsByQuantity(); true }
+        R.id.action_sort_alphabetically -> { viewModel?.sortItemsAlphabetically(); true }
+        R.id.action_sort_by_creation_date -> { viewModel?.sortItemsByCreationDate(); true }
+        R.id.action_lay_out_as_list -> { viewModel?.layOutItemsAsList(); true }
+        R.id.action_lay_out_as_grid -> { viewModel?.layOutItemsAsGrid(); true }
+        R.id.action_enable_selection_mode -> { setSelectionModeEnabled(true); true }
+        R.id.action_disable_selection_mode -> { setSelectionModeEnabled(false); true }
         else -> false
       }
     }
 
-    private fun enterSelectionMode() {
-      setSelectionModeEnabled(true)
-    }
-
-    private fun exitSelectionMode() {
-      setSelectionModeEnabled(false)
+    fun resetSelectionOptions(mustReset: Boolean) {
+      if (mustReset) {
+        setSelectionOptions(false)
+      }
     }
 
     private fun setSelectionModeEnabled(enabled: Boolean) {
@@ -320,17 +305,15 @@ class ItemListFragment : BaseFragment() {
     }
 
     private fun setSelectionOptions(enabled: Boolean) {
-      val selectItemsOption = menu?.findItem(R.id.action_select_items)
-      val deselectItemsOption = menu?.findItem(R.id.action_deselect_items)
-
-      selectItemsOption?.isVisible = !enabled
-      deselectItemsOption?.isVisible = enabled
+      menu?.let { setSelectionModeEnabled(it, enabled) }
     }
 
-    fun resetSelectionOptions(mustReset: Boolean) {
-      if (mustReset) {
-        setSelectionOptions(false)
-      }
+    private fun setSelectionModeEnabled(menu: Menu, enabled: Boolean) {
+      val enableSelectionOption = menu.findItem(R.id.action_enable_selection_mode)
+      val disableSelectionOption = menu.findItem(R.id.action_disable_selection_mode)
+
+      enableSelectionOption?.isVisible = !enabled
+      disableSelectionOption?.isVisible = enabled
     }
   }
 }
