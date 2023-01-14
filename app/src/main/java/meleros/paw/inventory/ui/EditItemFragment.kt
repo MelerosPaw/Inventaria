@@ -109,12 +109,11 @@ class EditItemFragment : BaseFragment() {
 
       if (quantity > 0 && name.isNotBlank()) {
         val description: CharSequence = editDescription.text
-        val image: CharSequence? = viewModel.itemPicturePath
 
         if (isInEditionMode) {
-          viewModel.modifyItem(name, description, quantity, image)
+          viewModel.modifyItem(name, description, quantity, viewModel.itemBeingEdited?.image)
         } else {
-          viewModel.createItem(name, description, quantity, image)
+          viewModel.createItem(name, description, quantity, viewModel.itemPicturePath)
         }
       }
     }
