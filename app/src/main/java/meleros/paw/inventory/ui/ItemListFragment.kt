@@ -101,7 +101,8 @@ class ItemListFragment : BaseFragment() {
       items?.let {
         drawItems(it)
 
-        if (viewModel.isInSelectionMode) {
+        // Cuando se llama tras eliminar items, queremos inhabilitar la selección.
+        if (!it.selectionModeEnabled) {
           setSelectionModeEnabled(false)
         }
       }

@@ -29,7 +29,6 @@ import meleros.paw.inventory.extension.ITEM_LIST_LAYOUT
 import meleros.paw.inventory.extension.ITEM_LIST_SORTING
 import meleros.paw.inventory.extension.dataStore
 import meleros.paw.inventory.ui.vo.ItemVO
-import meleros.paw.inventory.ui.widget.FramedPhotoViewerView
 import java.io.IOException
 
 class ItemListViewModel(app: Application): BaseViewModel(app) {
@@ -116,7 +115,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
 
         currentVOs = finalItems
         _itemListLiveData.value?.layout?.let { layout ->
-          _itemListLiveData.value = ItemListUpdate(layout, finalItems, currentVOs)
+          _itemListLiveData.value = ItemListUpdate(layout, finalItems, currentVOs, false)
         }
       }
     }
@@ -229,7 +228,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     val sorting = getSortingType(it)
     val sortedList = applySorting(sorting, items)
 
-    ItemListUpdate(layout, sortedList, currentVOs)
+    ItemListUpdate(layout, sortedList, currentVOs, isInSelectionMode)
   }
   //endregion
 
@@ -243,5 +242,6 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     val newItems: List<ItemVO>?,
     /** The current list of items on display before the change happens. */
     val currentItems: List<ItemVO>?,
+    val selectionModeEnabled: Boolean,
   )
 }
