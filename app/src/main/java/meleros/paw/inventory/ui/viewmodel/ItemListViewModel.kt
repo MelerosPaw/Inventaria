@@ -40,13 +40,14 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
 
   // Would be injections
   private val dataStore = app.applicationContext.dataStore
-  private var preferences: Preferences? = null
+  private val imageManager = ImageManager()
 
   // Exposed LiveData
   val itemListLiveData: LiveData<ItemListUpdate>
     get() = _itemListLiveData
 
-  //region Item List properties
+  //region Properties
+  private var preferences: Preferences? = null
   /**
    * Item list. Esta lista se le pasa al adapter, quien la usa directamente. Gracias a esto, Cuando se cambia el orden,
    * si está el modo selección habilitado, los items seleccionados se mantienen porque el adapter modifica esta misma
@@ -158,15 +159,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
 
   private fun Flow<List<Item>>.mapToVO(): Flow<List<ItemVO>> = map { list ->
     list.map { item ->
-      val imageUri = item.image?.let {
-        // TODO Melero 9/1/23: Extraer la lógica de leer URI a un sitio común
-        if (PicturesTakenFileProvider.isFromCamera(it)) {
-          PicturesTakenFileProvider.getUriForPicture(it, getApplication())
-        } else {
-          Uri.parse(it)
-        }
-      }
-
+      val imageUri = item.image?.let { imageManager.getUriFromString(it, getApplication()) }
       item.toVo(imageUri)
     }
   }

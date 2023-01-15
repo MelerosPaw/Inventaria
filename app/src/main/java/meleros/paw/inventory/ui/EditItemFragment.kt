@@ -13,13 +13,13 @@ import meleros.paw.inventory.R
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.databinding.FragmentEditItemBinding
 import meleros.paw.inventory.extension.whenTrue
-import meleros.paw.inventory.ui.viewmodel.ItemDetailViewModel
+import meleros.paw.inventory.ui.viewmodel.ItemEditionViewModel
 import meleros.paw.inventory.ui.widget.FramedPhotoViewerView
 
 class EditItemFragment : BaseFragment() {
 
   private var binding: FragmentEditItemBinding? = null
-  private val viewModel: ItemDetailViewModel by activityViewModels()
+  private val viewModel: ItemEditionViewModel by activityViewModels()
   private val photoManager = FramedPhotoViewerView.Manager(this) { origin, uri -> saveAndShowImage(origin, uri) }
   private val args: EditItemFragmentArgs by navArgs()
 
