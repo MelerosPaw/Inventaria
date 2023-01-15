@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import meleros.paw.inventory.R
 import meleros.paw.inventory.data.PicturesTakenFileProvider
 import meleros.paw.inventory.databinding.FramedImageViewerViewBinding
 
@@ -26,6 +27,12 @@ class FramedPhotoViewerView @JvmOverloads constructor(
     binding = FramedImageViewerViewBinding.inflate(LayoutInflater.from(context), this)
     binding.framedImageViewerLabelTakePicture.setOnClickListener { takePicture() }
     binding.framedImageViewerLabelSelectImage.setOnClickListener { pickImageFromGallery() }
+
+    attrs?.let {
+      val typedArray = context.obtainStyledAttributes(it, R.styleable.FramedPhotoViewerView)
+      displayControls = typedArray.getBoolean(R.styleable.FramedPhotoViewerView_displayControls, true)
+      typedArray.recycle()
+    }
   }
 
   var displayControls: Boolean = true
