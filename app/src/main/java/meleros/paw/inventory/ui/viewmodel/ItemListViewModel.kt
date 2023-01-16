@@ -1,7 +1,6 @@
 package meleros.paw.inventory.ui.viewmodel
 
 import android.app.Application
-import android.net.Uri
 import android.widget.Toast
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -21,7 +20,6 @@ import meleros.paw.inventory.data.ItemListSorting.GREATER_QUANTITY
 import meleros.paw.inventory.data.ItemListSorting.LESS_QUANTITY
 import meleros.paw.inventory.data.ItemListSorting.MOST_RECENT_FIRST
 import meleros.paw.inventory.data.ItemListSorting.OLDEST_FIRST
-import meleros.paw.inventory.data.PicturesTakenFileProvider
 import meleros.paw.inventory.data.mapper.toVo
 import meleros.paw.inventory.data.usecase.UCDeleteItems
 import meleros.paw.inventory.data.usecase.UCGetItems
@@ -40,7 +38,6 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
 
   // Would be injections
   private val dataStore = app.applicationContext.dataStore
-  private val imageManager = ImageManager()
 
   // Exposed LiveData
   val itemListLiveData: LiveData<ItemListUpdate>
@@ -159,7 +156,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
 
   private fun Flow<List<Item>>.mapToVO(): Flow<List<ItemVO>> = map { list ->
     list.map { item ->
-      val imageUri = item.image?.let { imageManager.getUriFromString(it, getApplication()) }
+      val imageUri = item.image?.let { ImageManager.getUriFromString(it, getApplication()) }
       item.toVo(imageUri)
     }
   }
@@ -228,10 +225,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
   class ItemListUpdate(
     /** The list's layout */
     val layout: ItemListLayout,
-    /**
-     * The list's items to be set. When no changes in item list have occured, this list will be null, it will be
-     * null.
-     */
+    /** The list's items to be set. When no changes in item list have occurred, this list will be null, it will be null. */
     val newItems: List<ItemVO>?,
     /** The current list of items on display before the change happens. */
     val currentItems: List<ItemVO>?,

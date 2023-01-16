@@ -25,7 +25,6 @@ class ItemDetailViewModel(app: Application): BaseViewModel(app) {
   val itemDetailLiveData: LiveData<ItemVO>
     get() = _itemDetailLiveData
 
-  private val imageManager = ImageManager()
   private var itemDisplayedOnDetail: Item? = null // TODO Melero 15/1/23: De momento, no tiene ningún uso
 
   fun loadItemForDetail(creationDate: Long) {
@@ -40,7 +39,7 @@ class ItemDetailViewModel(app: Application): BaseViewModel(app) {
   }
 
   private suspend fun mapToVo(it: Item) = withContext(Dispatchers.Default) {
-    val uri = it.image?.let { imageManager.getUriFromString(it, getApplication()) }
+    val uri = it.image?.let { ImageManager.getUriFromString(it, getApplication()) }
     it.toVo(uri)
   }
 }

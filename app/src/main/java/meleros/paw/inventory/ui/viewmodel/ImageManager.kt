@@ -5,7 +5,7 @@ import android.net.Uri
 import meleros.paw.inventory.data.PicturesTakenFileProvider
 import meleros.paw.inventory.ui.widget.FramedPhotoViewerView
 
-class ImageManager {
+object ImageManager {
 
   fun getUriFromString(path: CharSequence, context: Context): Uri? = when (getPictureOrigin(path)) {
     FramedPhotoViewerView.Origin.CAMERA -> createValidUri(path, context)

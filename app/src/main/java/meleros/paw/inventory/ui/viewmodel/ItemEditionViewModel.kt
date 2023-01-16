@@ -23,7 +23,6 @@ class ItemEditionViewModel(app: Application): BaseViewModel(app) {
   val itemEditionLiveData: LiveData<Item>
     get() = _itemEditionLiveData
 
-  private val imageManager = ImageManager()
   /** When selecting a picture, the path to the picture will be saved here. */
   var itemPicturePath: String? = null
   private var creationDateForEdition: Long = -1
@@ -74,7 +73,7 @@ class ItemEditionViewModel(app: Application): BaseViewModel(app) {
     }
   }
 
-  fun getUriFromString(path: CharSequence): Uri? = imageManager.getUriFromString(path, getApplication())
+  fun getUriFromString(path: CharSequence): Uri? = ImageManager.getUriFromString(path, getApplication())
 
   private fun isValidCreationDate(creationDate: Long): Boolean = Item.isValidCreationDate(creationDate)
 }
