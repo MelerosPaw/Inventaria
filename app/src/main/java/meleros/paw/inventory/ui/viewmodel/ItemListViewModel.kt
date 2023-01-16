@@ -1,7 +1,6 @@
 package meleros.paw.inventory.ui.viewmodel
 
 import android.app.Application
-import android.net.Uri
 import android.widget.Toast
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -21,7 +20,6 @@ import meleros.paw.inventory.data.ItemListSorting.GREATER_QUANTITY
 import meleros.paw.inventory.data.ItemListSorting.LESS_QUANTITY
 import meleros.paw.inventory.data.ItemListSorting.MOST_RECENT_FIRST
 import meleros.paw.inventory.data.ItemListSorting.OLDEST_FIRST
-import meleros.paw.inventory.data.PicturesTakenFileProvider
 import meleros.paw.inventory.data.mapper.toVo
 import meleros.paw.inventory.data.usecase.UCDeleteItems
 import meleros.paw.inventory.data.usecase.UCGetItems
@@ -29,7 +27,6 @@ import meleros.paw.inventory.extension.ITEM_LIST_LAYOUT
 import meleros.paw.inventory.extension.ITEM_LIST_SORTING
 import meleros.paw.inventory.extension.dataStore
 import meleros.paw.inventory.ui.vo.ItemVO
-import meleros.paw.inventory.ui.widget.FramedPhotoViewerView
 import java.io.IOException
 
 class ItemListViewModel(app: Application): BaseViewModel(app) {
@@ -41,13 +38,13 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
 
   // Would be injections
   private val dataStore = app.applicationContext.dataStore
-  private var preferences: Preferences? = null
 
   // Exposed LiveData
   val itemListLiveData: LiveData<ItemListUpdate>
     get() = _itemListLiveData
 
-  //region Item List properties
+  //region Properties
+  private var preferences: Preferences? = null
   /**
    * Item list. Esta lista se le pasa al adapter, quien la usa directamente. Gracias a esto, Cuando se cambia el orden,
    * si está el modo selección habilitado, los items seleccionados se mantienen porque el adapter modifica esta misma
@@ -116,7 +113,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
 
         currentVOs = finalItems
         _itemListLiveData.value?.layout?.let { layout ->
-          _itemListLiveData.value = ItemListUpdate(layout, finalItems, currentVOs)
+          _itemListLiveData.value = ItemListUpdate(layout, finalItems, currentVOs, false)
         }
       }
     }
@@ -159,15 +156,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
 
   private fun Flow<List<Item>>.mapToVO(): Flow<List<ItemVO>> = map { list ->
     list.map { item ->
-      val imageUri = item.image?.let {
-        // TODO Melero 9/1/23: Extraer la lógica de leer URI a un sitio común
-        if (PicturesTakenFileProvider.isFromCamera(it)) {
-          PicturesTakenFileProvider.getUriForPicture(it, getApplication())
-        } else {
-          Uri.parse(it)
-        }
-      }
-
+      val imageUri = item.image?.let { ImageManager.getUriFromString(it, getApplication()) }
       item.toVo(imageUri)
     }
   }
@@ -229,19 +218,17 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     val sorting = getSortingType(it)
     val sortedList = applySorting(sorting, items)
 
-    ItemListUpdate(layout, sortedList, currentVOs)
+    ItemListUpdate(layout, sortedList, currentVOs, isInSelectionMode)
   }
   //endregion
 
   class ItemListUpdate(
     /** The list's layout */
     val layout: ItemListLayout,
-    /**
-     * The list's items to be set. When no changes in item list have occured, this list will be null, it will be
-     * null.
-     */
+    /** The list's items to be set. When no changes in item list have occurred, this list will be null, it will be null. */
     val newItems: List<ItemVO>?,
     /** The current list of items on display before the change happens. */
     val currentItems: List<ItemVO>?,
+    val selectionModeEnabled: Boolean,
   )
 }

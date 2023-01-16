@@ -56,16 +56,18 @@
   </item>
 
   <item
-    android:id="@+id/action_select_items"
+    android:id="@+id/action_enable_selection_mode"
+    android:icon="@android:drawable/ic_menu_agenda"
     android:orderInCategory="3"
     android:title="@string/menu_option__select_items"
-    app:showAsAction="never" />
+    app:showAsAction="ifRoom" />
 
   <item
-    android:id="@+id/action_deselect_items"
-    android:orderInCategory="4"
-    android:title="@string/menu_option__deselect_items"
-    app:showAsAction="never"
-    android:visible="false"/>
+    android:id="@+id/action_disable_selection_mode"
+    android:icon="@android:drawable/ic_menu_revert"
+    android:orderInCategory="1"
+    android:title="@string/close_selection_mode"
+    android:visible="false"
+    app:showAsAction="always" />
 
 </menu>

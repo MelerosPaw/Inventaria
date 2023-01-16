@@ -40,6 +40,7 @@
     android:id="@+id/image_viewer__photo"
     android:layout_width="0dp"
     android:layout_height="0dp"
+    app:displayControls="false"
     app:layout_constraintBottom_toTopOf="@id/guideline__center_horizontal"
     app:layout_constraintEnd_toStartOf="@id/guideline__margin_end"
     app:layout_constraintStart_toEndOf="@id/guideline__margin_start"

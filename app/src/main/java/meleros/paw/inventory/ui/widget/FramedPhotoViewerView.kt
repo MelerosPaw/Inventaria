@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import meleros.paw.inventory.R
 import meleros.paw.inventory.data.PicturesTakenFileProvider
 import meleros.paw.inventory.databinding.FramedImageViewerViewBinding
 
@@ -26,6 +27,12 @@ class FramedPhotoViewerView @JvmOverloads constructor(
     binding = FramedImageViewerViewBinding.inflate(LayoutInflater.from(context), this)
     binding.framedImageViewerLabelTakePicture.setOnClickListener { takePicture() }
     binding.framedImageViewerLabelSelectImage.setOnClickListener { pickImageFromGallery() }
+
+    attrs?.let {
+      val typedArray = context.obtainStyledAttributes(it, R.styleable.FramedPhotoViewerView)
+      displayControls = typedArray.getBoolean(R.styleable.FramedPhotoViewerView_displayControls, true)
+      typedArray.recycle()
+    }
   }
 
   var displayControls: Boolean = true
@@ -65,7 +72,8 @@ class FramedPhotoViewerView @JvmOverloads constructor(
     private val pickPhotoLauncher: ActivityResultLauncher<PickVisualMediaRequest> =
       fragment.registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { destinationUri ->
         destinationUri?.let {
-          // TODO Melero 9/1/23: Guardar esto en el manual de Android Pure
+          // TODO Melero 9/1/23: Guardar esto en el manual de Android Pure. Cuando solicitas un archivo, tienes que
+          //  pedir permisos persistentes de forma que la aplicación siga pudiendo leerlo pasado el reinicio del móvil.
           if (takePersistableUriPermission) {
             fragment.context?.contentResolver?.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
           }
