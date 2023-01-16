@@ -16,11 +16,22 @@ class QuantityView @JvmOverloads constructor(
   var amount: Int
     get() = binding.inputAmount.text.toString().toIntOrNull() ?: 0
     set(value) {
-      if (amount in minAmount.. maxAmount) { binding.inputAmount.setText(value.toString()) }
+      if (value in minAmount.. maxAmount) {
+        binding.inputAmount.setText(value.toString())
+        onAmountChanged()
+      }
     }
 
   var minAmount: Int = Int.MIN_VALUE
+    set(value) {
+      field = value
+      onAmountChanged()
+    }
   var maxAmount: Int = Int.MAX_VALUE
+    set(value) {
+      field = value
+      onAmountChanged()
+    }
 
   init {
     binding = QuantityViewBinding.inflate(LayoutInflater.from(context), this)
@@ -29,14 +40,28 @@ class QuantityView @JvmOverloads constructor(
   }
 
   private fun setUpButtons() {
-    binding.btnDecrease.setOnClickListener { if (amount > minAmount) { amount-- } }
-    binding.btnIncrease.setOnClickListener { if (amount < maxAmount) { amount++ } }
+    binding.btnDecrease.setOnClickListener {
+      if (amount > minAmount) {
+        amount--
+      }
+    }
+    binding.btnIncrease.setOnClickListener {
+      if (amount < maxAmount) {
+        amount++
+      }
+    }
   }
 
   private fun setUpTextField() {
     binding.inputAmount.doAfterTextChanged {
-      val error: String? = "La cantidad debe ser al menos 1".takeIf { amount == 0 }
+      val error: String? = "La cantidad debe ser al menos $minAmount".takeIf { amount < minAmount }
       binding.inputAmount.error = error
+      onAmountChanged()
     }
+  }
+
+  private fun onAmountChanged() {
+    binding.btnDecrease.isEnabled = amount > minAmount
+    binding.btnIncrease.isEnabled = amount < maxAmount
   }
 }
