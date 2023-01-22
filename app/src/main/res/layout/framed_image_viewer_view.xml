@@ -28,31 +28,47 @@
     app:layout_constraintTop_toTopOf="parent"
     tools:src="@tools:sample/backgrounds/scenic" />
 
-  <Button
+  <View
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:background="@color/translucent_white"
+    app:layout_constraintBottom_toBottomOf="@id/framed_image_viewer_img__item_picture"
+    app:layout_constraintEnd_toEndOf="@id/framed_image_viewer_img__item_picture"
+    app:layout_constraintStart_toStartOf="@id/framed_image_viewer__label__select_image"
+    app:layout_constraintTop_toTopOf="@id/framed_image_viewer__barrier__buttons_top" />
+
+  <meleros.paw.inventory.ui.widget.TextImageButtonView
     android:id="@+id/framed_image_viewer__label__select_image"
-    style="@style/FramedImageViewerButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:text="@string/select_picture"
-    app:drawableTopCompat="@android:drawable/ic_menu_gallery"
+    android:layout_marginHorizontal="10dp"
+    android:background="?selectableItemBackground"
+    app:image="@drawable/ic_select_photo"
     app:layout_constraintBottom_toBottomOf="@id/framed_image_viewer_img__item_picture"
     app:layout_constraintEnd_toStartOf="@id/framed_image_viewer__label__take_picture"
     app:layout_constraintHorizontal_chainStyle="spread"
     app:layout_constraintStart_toStartOf="@id/framed_image_viewer_img__item_picture"
-    app:layout_constraintTop_toTopOf="@id/framed_image_viewer_img__item_picture" />
+    app:layout_constraintTop_toTopOf="@id/framed_image_viewer_img__item_picture"
+    app:text="@string/select_picture" />
 
-  <Button
+  <meleros.paw.inventory.ui.widget.TextImageButtonView
     android:id="@+id/framed_image_viewer__label__take_picture"
-    style="@style/FramedImageViewerButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="10dp"
-    android:text="@string/take_picture"
-    app:drawableTopCompat="@android:drawable/ic_menu_camera"
+    android:background="?selectableItemBackground"
+    app:image="@drawable/ic_take_photo"
     app:layout_constraintBottom_toBottomOf="@id/framed_image_viewer_img__item_picture"
     app:layout_constraintEnd_toEndOf="@id/framed_image_viewer_img__item_picture"
     app:layout_constraintStart_toEndOf="@id/framed_image_viewer__label__select_image"
-    app:layout_constraintTop_toTopOf="@id/framed_image_viewer_img__item_picture" />
+    app:layout_constraintTop_toTopOf="@id/framed_image_viewer_img__item_picture"
+    app:text="@string/take_picture" />
+
+  <androidx.constraintlayout.widget.Barrier
+    android:id="@+id/framed_image_viewer__barrier__buttons_top"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:barrierDirection="top"
+    app:constraint_referenced_ids="framed_image_viewer__label__select_image, framed_image_viewer__label__take_picture" />
 
 </merge>

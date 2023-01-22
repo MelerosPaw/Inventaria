@@ -1,4 +1,5 @@
 <resources>
   <dimen name="fab_margin">16dp</dimen>
   <dimen name="min_clickable_area">48dp</dimen>
+  <dimen name="text_image_button_view_padding">8dp</dimen>
 </resources>

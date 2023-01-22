@@ -63,9 +63,16 @@ class ItemListFragment : BaseFragment() {
 
   private fun setUpSelectionButtons() {
     selectionBinding?.run {
+      setUpBackground()
       setUpDeselectAllButton()
       setUpSelectAllButton()
       setUpOnDeleteItemsButton()
+    }
+  }
+
+  private fun SelectionFabMenuBinding.setUpBackground() {
+    viewCloseSelectionMenu.setOnClickListener {
+      closeSelectionMenu(viewModel.isInSelectionMode)
     }
   }
 
@@ -218,7 +225,7 @@ class ItemListFragment : BaseFragment() {
 
   @DrawableRes
   private fun getFabIconAccordingToSelectionMode(isSelectionModeEnabled: Boolean): Int =
-    android.R.drawable.ic_menu_agenda.takeIf { isSelectionModeEnabled } ?: android.R.drawable.ic_input_add
+    R.drawable.ic_close.takeIf { isSelectionModeEnabled } ?: R.drawable.ic_add
 
   @StringRes
   private fun getToolbarTitleAccordingToSelectionModeEnabled(isSelectionModeEnabled: Boolean): Int =

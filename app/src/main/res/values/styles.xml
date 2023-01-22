@@ -9,7 +9,6 @@
   <style name="FramedImageViewerButton" parent="Widget.AppCompat.Button.Borderless.Colored">
     <!--TODO Melero 24/12/22: Como android:drawableTint no vale para la v23, habría que utilizar un drawable del color concreto para las versiones inferiores -->
     <item name="android:background">@android:color/transparent</item>
-    <item name="android:textColor">?android:attr/colorPrimary</item>
   </style>
 
 </resources>

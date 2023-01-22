@@ -57,14 +57,14 @@
 
   <item
     android:id="@+id/action_enable_selection_mode"
-    android:icon="@android:drawable/ic_menu_agenda"
+    android:icon="@drawable/ic_enable_selection_mode"
     android:orderInCategory="3"
     android:title="@string/menu_option__select_items"
     app:showAsAction="ifRoom" />
 
   <item
     android:id="@+id/action_disable_selection_mode"
-    android:icon="@android:drawable/ic_menu_revert"
+    android:icon="@drawable/ic_disable_selection_mode"
     android:orderInCategory="1"
     android:title="@string/close_selection_mode"
     android:visible="false"

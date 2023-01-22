@@ -1,10 +1,13 @@
 package meleros.paw.inventory.ui.widget
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
+import meleros.paw.inventory.R
 import meleros.paw.inventory.databinding.QuantityViewBinding
 
 class QuantityView @JvmOverloads constructor(
@@ -61,7 +64,20 @@ class QuantityView @JvmOverloads constructor(
   }
 
   private fun onAmountChanged() {
-    binding.btnDecrease.isEnabled = amount > minAmount
-    binding.btnIncrease.isEnabled = amount < maxAmount
+    with(binding) {
+      val decreaseButtonEnabled = amount > minAmount
+      val increaseButtonEnabled = amount < maxAmount
+
+      btnDecrease.isEnabled = decreaseButtonEnabled
+      btnIncrease.isEnabled = increaseButtonEnabled
+      btnDecrease.backgroundTintList = getEnabledColor(decreaseButtonEnabled)
+      btnIncrease.backgroundTintList = getEnabledColor(increaseButtonEnabled)
+    }
+  }
+
+  private fun getEnabledColor(isEnabled: Boolean): ColorStateList {
+    val enabledColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryColor))
+    val disabledColor = ColorStateList.valueOf(ContextCompat.getColor(context, androidx.appcompat.R.color.material_blue_grey_800))
+    return enabledColor.takeIf { isEnabled } ?: disabledColor
   }
 }

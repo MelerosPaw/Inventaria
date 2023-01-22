@@ -4,6 +4,18 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   tools:showIn="@layout/fragment_item_list">
 
+  <View
+    android:id="@+id/view__close_selection_menu"
+    android:clickable="true"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    tools:background="@color/white"
+    tools:alpha="0.8"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
+
   <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
     android:id="@+id/btn__delete_items"
     android:layout_width="wrap_content"
@@ -12,7 +24,7 @@
     android:layout_marginEnd="@dimen/fab_margin"
     android:text="@string/delete_items"
     android:visibility="gone"
-    app:icon="@android:drawable/ic_menu_delete"
+    app:icon="@drawable/ic_delete_items"
     app:layout_constraintBottom_toTopOf="@id/btn__deselect_all"
     app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -24,7 +36,7 @@
     android:layout_marginEnd="@dimen/fab_margin"
     android:text="@string/clear_selection"
     android:visibility="gone"
-    app:icon="@android:drawable/ic_delete"
+    app:icon="@drawable/ic_deselect_all"
     app:layout_constraintBottom_toTopOf="@id/btn__select_all"
     app:layout_constraintEnd_toEndOf="parent" />
 
@@ -36,7 +48,7 @@
     android:layout_marginEnd="@dimen/fab_margin"
     android:text="@string/select_everything"
     android:visibility="gone"
-    app:icon="@android:drawable/ic_input_add"
+    app:icon="@drawable/ic_add"
     app:layout_constraintBottom_toTopOf="@id/btn__create_item"
     app:layout_constraintEnd_toEndOf="parent" />
 

@@ -3,4 +3,10 @@
   <declare-styleable name="FramedPhotoViewerView">
     <attr name="displayControls" format="boolean"/>
   </declare-styleable>
+
+  <declare-styleable name="TextImageButtonView">
+    <attr name="image" format="reference"/>
+    <attr name="text" format="reference|string"/>
+    <attr name="minified" format="boolean"/>
+  </declare-styleable>
 </resources>

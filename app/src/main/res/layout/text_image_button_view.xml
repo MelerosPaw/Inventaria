@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  tools:background="?selectableItemBackground"
+  tools:minHeight="@dimen/min_clickable_area"
+  tools:minWidth="@dimen/min_clickable_area"
+  tools:padding="8dp"
+  tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+  <ImageView
+    android:id="@+id/tibv__img__icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toTopOf="@id/tibv__label__text"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_chainStyle="packed"
+    app:tint="@color/primaryColor"
+    tools:src="@drawable/ic_select_photo" />
+
+  <TextView
+    android:id="@+id/tibv__label__text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAllCaps="true"
+    android:textColor="?android:attr/colorPrimary"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/tibv__img__icon"
+    tools:text="@string/select_picture" />
+
+</merge>
