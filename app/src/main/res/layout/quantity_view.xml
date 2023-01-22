@@ -13,7 +13,8 @@
     android:layout_height="wrap_content"
     app:backgroundTint="@color/primaryColor"
     app:fabCustomSize="48dp"
-    app:srcCompat="@drawable/ic_subtract" />
+    app:srcCompat="@drawable/ic_subtract"
+    app:tint="@color/white" />
 
   <EditText
     android:id="@+id/input__amount"
@@ -36,6 +37,7 @@
     android:layout_height="wrap_content"
     app:backgroundTint="@color/primaryColor"
     app:fabCustomSize="48dp"
-    app:srcCompat="@drawable/ic_add" />
+    app:srcCompat="@drawable/ic_add"
+    app:tint="@color/white" />
 
 </merge>

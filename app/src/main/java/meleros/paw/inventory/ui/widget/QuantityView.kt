@@ -70,14 +70,22 @@ class QuantityView @JvmOverloads constructor(
 
       btnDecrease.isEnabled = decreaseButtonEnabled
       btnIncrease.isEnabled = increaseButtonEnabled
-      btnDecrease.backgroundTintList = getEnabledColor(decreaseButtonEnabled)
-      btnIncrease.backgroundTintList = getEnabledColor(increaseButtonEnabled)
+      btnDecrease.backgroundTintList = getButtonBackgroundColor(decreaseButtonEnabled)
+      btnIncrease.backgroundTintList = getButtonBackgroundColor(increaseButtonEnabled)
+      btnDecrease.imageTintList = getButtonIconColor(decreaseButtonEnabled)
+      btnIncrease.imageTintList = getButtonIconColor(increaseButtonEnabled)
     }
   }
 
-  private fun getEnabledColor(isEnabled: Boolean): ColorStateList {
+  private fun getButtonBackgroundColor(isEnabled: Boolean): ColorStateList {
     val enabledColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryColor))
-    val disabledColor = ColorStateList.valueOf(ContextCompat.getColor(context, androidx.appcompat.R.color.material_blue_grey_800))
+    val disabledColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.gray))
+    return enabledColor.takeIf { isEnabled } ?: disabledColor
+  }
+
+  private fun getButtonIconColor(isEnabled: Boolean): ColorStateList {
+    val enabledColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white))
+    val disabledColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.light_gray))
     return enabledColor.takeIf { isEnabled } ?: disabledColor
   }
 }
