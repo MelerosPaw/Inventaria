@@ -1,4 +1,4 @@
-package meleros.paw.inventory.ui
+package meleros.paw.inventory.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
@@ -13,6 +13,7 @@ import meleros.paw.inventory.R
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.databinding.FragmentEditItemBinding
 import meleros.paw.inventory.extension.whenTrue
+import meleros.paw.inventory.ui.TitleHolder
 import meleros.paw.inventory.ui.viewmodel.ItemEditionViewModel
 import meleros.paw.inventory.ui.widget.FramedPhotoViewerView
 

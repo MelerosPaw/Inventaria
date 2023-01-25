@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".ui.ItemListFragment">
+  tools:context=".ui.fragment.ItemListFragment">
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/list__items"
@@ -24,13 +24,13 @@
     android:id="@+id/btn__create_item"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:contentDescription="@string/content_description__add_item"
     android:layout_marginBottom="@dimen/fab_margin"
     android:layout_marginEnd="@dimen/fab_margin"
+    android:contentDescription="@string/content_description__add_item"
+    app:backgroundTint="@color/primaryColor"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:tint="@color/onPrimaryColor"
-    app:backgroundTint="@color/primaryColor"
-    app:srcCompat="@android:drawable/ic_input_add" />
+    app:srcCompat="@drawable/ic_add"
+    app:tint="@color/onPrimaryColor" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

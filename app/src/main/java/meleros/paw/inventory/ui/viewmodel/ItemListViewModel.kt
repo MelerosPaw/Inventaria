@@ -20,8 +20,8 @@ import meleros.paw.inventory.data.ItemListSorting.GREATER_QUANTITY
 import meleros.paw.inventory.data.ItemListSorting.LESS_QUANTITY
 import meleros.paw.inventory.data.ItemListSorting.MOST_RECENT_FIRST
 import meleros.paw.inventory.data.ItemListSorting.OLDEST_FIRST
+import meleros.paw.inventory.data.mapper.toBo
 import meleros.paw.inventory.data.mapper.toVo
-import meleros.paw.inventory.data.usecase.UCDeleteItems
 import meleros.paw.inventory.data.usecase.UCGetItems
 import meleros.paw.inventory.extension.ITEM_LIST_LAYOUT
 import meleros.paw.inventory.extension.ITEM_LIST_SORTING
@@ -104,21 +104,6 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     currentVOs?.forEach { it.isSelected = false }
   }
 
-  fun deleteSelectedItems() {
-    doWork {
-      currentVOs?.let { vos ->
-        val itemsToRemove = getSelectedItemIds()
-        UCDeleteItems(database)(itemsToRemove)
-        val finalItems = vos.filterNot { it.creationDate in itemsToRemove }
-
-        currentVOs = finalItems
-        _itemListLiveData.value?.layout?.let { layout ->
-          _itemListLiveData.value = ItemListUpdate(layout, finalItems, currentVOs, false)
-        }
-      }
-    }
-  }
-
   fun sortItemsByQuantity() {
     changeSorting { currentSorting -> GREATER_QUANTITY.takeIf { currentSorting == LESS_QUANTITY } ?: LESS_QUANTITY }
   }
@@ -151,8 +136,8 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     }
   }
 
-  private fun getSelectedItemIds(): List<Long> =
-    currentVOs?.mapNotNull { vo -> vo.creationDate.takeIf { vo.isSelected } }.orEmpty()
+  fun getSelectedItems(): List<Item> =
+    currentVOs?.mapNotNull { vo -> vo.takeIf { vo.isSelected }?.toBo() }.orEmpty()
 
   private fun Flow<List<Item>>.mapToVO(): Flow<List<ItemVO>> = map { list ->
     list.map { item ->
@@ -218,7 +203,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     val sorting = getSortingType(it)
     val sortedList = applySorting(sorting, items)
 
-    ItemListUpdate(layout, sortedList, currentVOs, isInSelectionMode)
+    ItemListUpdate(layout, sortedList, currentVOs)
   }
   //endregion
 
@@ -229,6 +214,5 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     val newItems: List<ItemVO>?,
     /** The current list of items on display before the change happens. */
     val currentItems: List<ItemVO>?,
-    val selectionModeEnabled: Boolean,
   )
 }

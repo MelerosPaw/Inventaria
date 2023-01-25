@@ -15,3 +15,5 @@ fun Item.toVo(imageUri: Uri?) = ItemVO(name, description, quantity.toString(), c
   SimpleDateFormat("dd/MM/yy", Locale.getDefault()).format(creationDate),
   imageUri)
 
+fun ItemVO.toBo(): Item = Item(name, description.orEmpty(), quantity.toInt(), creationDate, image?.path)
+

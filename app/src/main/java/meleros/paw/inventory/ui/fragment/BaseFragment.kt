@@ -1,4 +1,4 @@
-package meleros.paw.inventory.ui
+package meleros.paw.inventory.ui.fragment
 
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections

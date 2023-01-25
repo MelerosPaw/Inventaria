@@ -6,15 +6,16 @@
 
   <View
     android:id="@+id/view__close_selection_menu"
-    android:clickable="true"
     android:layout_width="0dp"
     android:layout_height="0dp"
-    tools:background="@color/white"
-    tools:alpha="0.8"
-    app:layout_constraintTop_toTopOf="parent"
+    android:background="@color/translucent_white"
+    android:clickable="true"
+    android:visibility="gone"
     app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
+    app:layout_constraintTop_toTopOf="parent"
+    tools:visibility="visible" />
 
   <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
     android:id="@+id/btn__delete_items"

@@ -4,8 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.data.db.InventoryDB
-import meleros.paw.inventory.data.db.ItemDBO
-import meleros.paw.inventory.data.mapper.toBo
 import meleros.paw.inventory.data.mapper.toDBO
 
 class UCCreateItems(db: InventoryDB) {

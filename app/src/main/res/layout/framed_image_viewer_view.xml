@@ -35,7 +35,8 @@
     app:layout_constraintBottom_toBottomOf="@id/framed_image_viewer_img__item_picture"
     app:layout_constraintEnd_toEndOf="@id/framed_image_viewer_img__item_picture"
     app:layout_constraintStart_toStartOf="@id/framed_image_viewer__label__select_image"
-    app:layout_constraintTop_toTopOf="@id/framed_image_viewer__barrier__buttons_top" />
+    app:layout_constraintTop_toTopOf="@id/framed_image_viewer__barrier__buttons_top"
+    tools:visibility="gone" />
 
   <meleros.paw.inventory.ui.widget.TextImageButtonView
     android:id="@+id/framed_image_viewer__label__select_image"

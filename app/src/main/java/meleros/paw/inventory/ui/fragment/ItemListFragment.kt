@@ -1,4 +1,4 @@
-package meleros.paw.inventory.ui
+package meleros.paw.inventory.ui.fragment
 
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -13,7 +13,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,9 +23,11 @@ import meleros.paw.inventory.R
 import meleros.paw.inventory.data.ItemListLayout
 import meleros.paw.inventory.databinding.FragmentItemListBinding
 import meleros.paw.inventory.databinding.SelectionFabMenuBinding
+import meleros.paw.inventory.ui.SelectionModeListener
 import meleros.paw.inventory.ui.adapter.BaseItemAdapter
 import meleros.paw.inventory.ui.adapter.GridItemAdapter
 import meleros.paw.inventory.ui.adapter.ListItemAdapter
+import meleros.paw.inventory.ui.viewmodel.DeleteItemViewModel
 import meleros.paw.inventory.ui.viewmodel.ItemListViewModel
 import meleros.paw.inventory.ui.vo.ItemVO
 import java.lang.ref.WeakReference
@@ -32,7 +36,8 @@ class ItemListFragment : BaseFragment() {
 
   private var binding: FragmentItemListBinding? = null
   private var selectionBinding: SelectionFabMenuBinding? = null
-  private val viewModel: ItemListViewModel by activityViewModels()
+  private val viewModel: ItemListViewModel by viewModels()
+  private val deletionViewModel: DeleteItemViewModel by activityViewModels()
   private var menuProvider: ItemListMenuProvider? = null
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -72,7 +77,7 @@ class ItemListFragment : BaseFragment() {
 
   private fun SelectionFabMenuBinding.setUpBackground() {
     viewCloseSelectionMenu.setOnClickListener {
-      closeSelectionMenu(viewModel.isInSelectionMode)
+      toggleSelectionModeMenuVisibility()
     }
   }
 
@@ -97,23 +102,21 @@ class ItemListFragment : BaseFragment() {
   private fun SelectionFabMenuBinding.setUpOnDeleteItemsButton() {
     btnDeleteItems.setOnClickListener {
       (binding?.listItems?.adapter as? BaseItemAdapter)?.let {
-        viewModel.deleteSelectedItems()
-        // Actualiza la lista publicando un ItemListUpdate, que, como ya existe, hará replace.
+        val itemsToDelete = viewModel.getSelectedItems()
+        deletionViewModel.deleteItems(itemsToDelete)
       }
     }
   }
 
   private fun setUpItemList() {
     viewModel.itemListLiveData.observe(viewLifecycleOwner) { items ->
-      items?.let {
-        drawItems(it)
-
-        // Cuando se llama tras eliminar items, queremos inhabilitar la selección.
-        if (!it.selectionModeEnabled) {
-          setSelectionModeEnabled(false)
-        }
-      }
+      items?.let(::drawItems)
     }
+
+    deletionViewModel.itemsDeletedLiveData.observe(viewLifecycleOwner) {
+      setSelectionModeEnabled(false)
+    }
+
     // TODO Melero 31/12/22: Habría simplemente que actualizar la lista con el item nuevo, no volverla a pintar entera
 //    viewModel.itemEditionFinishedLiveData.observe(viewLifecycleOwner) { it.whenTrue(false) { viewModel.loadItems() } }
 
@@ -210,13 +213,13 @@ class ItemListFragment : BaseFragment() {
 
   private fun setUpToolbarForSelectionMode(isSelectionModeEnabled: Boolean) {
     val toolbarTitle = getToolbarTitleAccordingToSelectionModeEnabled(isSelectionModeEnabled)
-    val toolbarColor = getToolbarColorAccordingToSelectionModeEnabled(isSelectionModeEnabled)
+    val toolbarColor = getSelectionModeColor(isSelectionModeEnabled)
     (activity as? SelectionModeListener)?.onSelectionModeChanged(toolbarTitle, toolbarColor)
   }
 
   private fun setUpFabForSelectionMode(isSelectionModeEnabled: Boolean) {
     binding?.btnCreateItem?.run {
-      val color = getFabColorAccordingToSelectionMode(isSelectionModeEnabled)
+      val color = getSelectionModeColor(isSelectionModeEnabled)
       backgroundTintList = ColorStateList.valueOf(color)
       val icon = getFabIconAccordingToSelectionMode(isSelectionModeEnabled)
       setImageResource(icon)
@@ -225,7 +228,7 @@ class ItemListFragment : BaseFragment() {
 
   @DrawableRes
   private fun getFabIconAccordingToSelectionMode(isSelectionModeEnabled: Boolean): Int =
-    R.drawable.ic_close.takeIf { isSelectionModeEnabled } ?: R.drawable.ic_add
+    R.drawable.ic_selection_mode_menu.takeIf { isSelectionModeEnabled } ?: R.drawable.ic_add
 
   @StringRes
   private fun getToolbarTitleAccordingToSelectionModeEnabled(isSelectionModeEnabled: Boolean): Int =
@@ -233,13 +236,7 @@ class ItemListFragment : BaseFragment() {
       ?: R.string.item_list_fragment_label
 
   @ColorInt
-  private fun getToolbarColorAccordingToSelectionModeEnabled(isSelectionModeEnabled: Boolean): Int {
-    val color = R.color.secondaryVariantColor.takeIf { isSelectionModeEnabled } ?: R.color.primaryColor
-    return ResourcesCompat.getColor(resources, color, null)
-  }
-
-  @ColorInt
-  private fun getFabColorAccordingToSelectionMode(isSelectionModeEnabled: Boolean): Int {
+  private fun getSelectionModeColor(isSelectionModeEnabled: Boolean): Int {
     val color = R.color.secondaryVariantColor.takeIf { isSelectionModeEnabled } ?: R.color.primaryColor
     return ResourcesCompat.getColor(resources, color, null)
   }
@@ -254,7 +251,9 @@ class ItemListFragment : BaseFragment() {
 
   private fun toggleSelectionModeMenuVisibility() {
     selectionBinding?.run {
-      if (viewModel.isMenuOpen) {
+      val menuIsOpen = viewModel.isMenuOpen
+
+      if (menuIsOpen) {
         btnDeleteItems.hide()
         btnDeselectAll.hide()
         btnSelectAll.hide()
@@ -264,7 +263,8 @@ class ItemListFragment : BaseFragment() {
         btnSelectAll.show()
       }
 
-      viewModel.isMenuOpen = !viewModel.isMenuOpen
+      viewCloseSelectionMenu.isVisible = !menuIsOpen
+      viewModel.isMenuOpen = !menuIsOpen
     }
   }
 
@@ -275,6 +275,8 @@ class ItemListFragment : BaseFragment() {
   private fun navigateToCreate() {
     navigate(ItemListFragmentDirections.actionItemListToCreate())
   }
+
+
 
   class ItemListMenuProvider(private val viewModel: ItemListViewModel? = null, fragment: ItemListFragment) : MenuProvider {
 

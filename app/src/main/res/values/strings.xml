@@ -1,7 +1,7 @@
 <resources>
   <string name="app_name">Inventaria</string>
   <string name="item_list_fragment_label">@string/app_name</string>
-  <string name="item_list_fragment_label_on_selection_mode">Seleccionar items</string>
+  <string name="item_list_fragment_label_on_selection_mode">Seleccionar objetos</string>
   <string name="create_item_fragment_label">Nuevo objeto</string>
   <string name="edit_item_fragment_label">Editando %1$s</string>
   <string name="save">Guardar</string>
@@ -19,10 +19,18 @@
   <string name="content_description__add_item">Añadir artículo</string>
   <string name="clear_selection">Deseleccionar todo</string>
   <string name="select_everything">Seleccionar todo</string>
-  <string name="delete_items">Borrar items</string>
+  <string name="delete_items">Borrar objetos</string>
+  <string name="delete_item">Borrar objeto</string>
   <string name="menu_option__sort">Ordenar</string>
   <string name="menu_option__layout">Visualizar</string>
   <string name="menu_option__select_items">Seleccionar</string>
   <string name="menu_option__deselect_items">Deseleccionar</string>
   <string name="close_selection_mode">Dejar de seleccionar</string>
+  <string name="no">No</string>
+  <string name="yes">Sí</string>
+
+  <plurals name="delete_item_cofirmation_message">
+    <item quantity="one">¿Seguro que quieres eliminar este objeto?</item>
+    <item quantity="other">¿Seguro que quieres eliminar estos objetos?</item>
+  </plurals>
 </resources>

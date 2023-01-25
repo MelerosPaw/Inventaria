@@ -12,13 +12,13 @@ import java.io.File
 class PicturesTakenFileProvider: FileProvider(R.xml.provider_paths) {
 
   companion object {
-    // Must be the same as in the manifest's <provider>.
+    /** Must be the same as in the manifest's <provider>. */
     private const val authority: String = "${BuildConfig.APPLICATION_ID}.fileprovider"
-    // Must be the same path specified in provider_paths.xml. So whats the point on specifying the name?
+    /** Must be the same path specified in provider_paths.xml. So whats the point on specifying the name? */
     private const val picturesDir: String = "pictures_taken"
-    // Must be the same name specified in provider_paths.xml. What's the point then on specifying it if you cannot access to it.
+    /** Must be the same name specified in provider_paths.xml. What's the point then on specifying it if you cannot access to it. */
     private const val picturesDirId: String = "/pictures"
-    // Just the content:// scheme
+    /** Just the content:// scheme */
     private const val scheme: String = "content"
 
     fun getUriForNewPicture(context: Context): Uri {

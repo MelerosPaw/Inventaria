@@ -7,7 +7,7 @@
 
   <fragment
     android:id="@+id/item_list_fragment"
-    android:name="meleros.paw.inventory.ui.ItemListFragment"
+    android:name="meleros.paw.inventory.ui.fragment.ItemListFragment"
     android:label="@string/item_list_fragment_label"
     tools:layout="@layout/fragment_item_list">
 
@@ -23,7 +23,7 @@
 
   <fragment
     android:id="@+id/EditItemFragment"
-    android:name="meleros.paw.inventory.ui.EditItemFragment"
+    android:name="meleros.paw.inventory.ui.fragment.EditItemFragment"
     android:label="@string/create_item_fragment_label"
     tools:layout="@layout/fragment_edit_item">
 
@@ -40,7 +40,7 @@
 
   <fragment
     android:id="@+id/DetailItemFragment"
-    android:name="meleros.paw.inventory.ui.DetailItemFragment"
+    android:name="meleros.paw.inventory.ui.fragment.ItemDetailFragment"
     tools:layout="@layout/fragment_item_detail">
 
     <argument

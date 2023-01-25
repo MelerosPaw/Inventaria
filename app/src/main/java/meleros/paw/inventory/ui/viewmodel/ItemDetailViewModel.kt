@@ -10,6 +10,7 @@ import meleros.paw.inventory.data.mapper.toVo
 import meleros.paw.inventory.data.usecase.UCGetItem
 import meleros.paw.inventory.data.usecase.UCGetItemDBOFlow
 import meleros.paw.inventory.ui.vo.ItemVO
+import java.util.Collections
 
 class ItemDetailViewModel(app: Application): BaseViewModel(app) {
 
@@ -18,7 +19,7 @@ class ItemDetailViewModel(app: Application): BaseViewModel(app) {
   val itemDetailLiveData: LiveData<ItemVO>
     get() = _itemDetailLiveData
 
-  private var itemDisplayedOnDetail: Item? = null // TODO Melero 15/1/23: De momento, no tiene ningún uso
+  var itemDisplayedOnDetail: Item? = null
 
   fun loadItemForDetail(creationDate: Long) {
     doWork {
@@ -35,4 +36,6 @@ class ItemDetailViewModel(app: Application): BaseViewModel(app) {
     val uri = it.image?.let { ImageManager.getUriFromString(it, getApplication()) }
     it.toVo(uri)
   }
+
+  fun getItemId(): List<Long>? = itemDisplayedOnDetail?.creationDate?.let { Collections.singletonList(it) }
 }
