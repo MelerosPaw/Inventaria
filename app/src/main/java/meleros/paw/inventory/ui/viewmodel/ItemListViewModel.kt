@@ -7,9 +7,12 @@ import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.withContext
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.data.ItemListLayout
@@ -26,6 +29,7 @@ import meleros.paw.inventory.data.usecase.UCGetItems
 import meleros.paw.inventory.extension.ITEM_LIST_LAYOUT
 import meleros.paw.inventory.extension.ITEM_LIST_SORTING
 import meleros.paw.inventory.extension.dataStore
+import meleros.paw.inventory.ui.Event
 import meleros.paw.inventory.ui.vo.ItemVO
 import java.io.IOException
 
@@ -62,12 +66,14 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
   init {
     // Escucha las preferencias y las guarda para cuando cambie la lista, poder volver a aplicarlas sin que tengan que
     // cambiar. Tal vez debería guardar los valores que nos interesan en lugar de las preferencias enteras.
-    doWork {
+    doWork(false) { // TODO Melero 28/1/23: Por algún puto motivo no entiende que esto debe ser en un hilo secundario para que sea cargando
       dataStore.data
         .catch { onErrorWhileReadingPreferences(it) }
         .collect { preferences ->
-          this.preferences = preferences
-          currentVOs?.let { items -> postItemList(preferences, items) }
+          doWork {
+            this@ItemListViewModel.preferences = preferences
+            currentVOs?.let { items -> postItemList(preferences, items) }
+          }
         }
     }
   }
@@ -189,6 +195,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
 
   private fun onErrorWhileReadingPreferences(it: Throwable) {
     if (it is IOException) {
+      // TODO Melero 26/1/23: Esto habrá que quitarlo en producción
       Toast.makeText(getApplication(), "Error al leer preferencias", Toast.LENGTH_SHORT).show()
     } else {
       throw it

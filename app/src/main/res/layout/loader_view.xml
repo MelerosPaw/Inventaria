@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+  <View
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:background="@color/translucent_white"
+    android:clickable="true"
+    android:focusable="false"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <ProgressBar
+    android:id="@+id/loader__progress"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    android:progressTint="@color/primaryColor"
+    android:progressTintMode="src_in"
+    app:layout_constraintBottom_toTopOf="@id/loader__label__message"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_chainStyle="packed" />
+
+  <TextView
+    android:id="@+id/loader__label__message"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:textSize="16sp"
+    android:visibility="gone"
+    app:layout_constrainedHeight="true"
+    app:layout_constrainedWidth="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/loader__progress"
+    tools:text="Operación que se está realizando"
+    tools:visibility="visible"/>
+
+</merge>

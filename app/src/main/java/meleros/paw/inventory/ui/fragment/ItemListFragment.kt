@@ -23,6 +23,7 @@ import meleros.paw.inventory.R
 import meleros.paw.inventory.data.ItemListLayout
 import meleros.paw.inventory.databinding.FragmentItemListBinding
 import meleros.paw.inventory.databinding.SelectionFabMenuBinding
+import meleros.paw.inventory.ui.OverallLoader
 import meleros.paw.inventory.ui.SelectionModeListener
 import meleros.paw.inventory.ui.adapter.BaseItemAdapter
 import meleros.paw.inventory.ui.adapter.GridItemAdapter
@@ -50,6 +51,7 @@ class ItemListFragment : BaseFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    setUpLoader()
     setUpOptionMenu()
     setUpAddButton()
     setUpSelectionButtons()
@@ -60,6 +62,14 @@ class ItemListFragment : BaseFragment() {
     super.onDestroyView()
     binding = null
     menuProvider?.let { activity?.removeMenuProvider(it) }
+  }
+
+  private fun setUpLoader() {
+    viewModel.wipLiveData.observe(viewLifecycleOwner) {
+      it.get()?.  let { state ->
+        (activity as? OverallLoader)?.updateState(state)
+      }
+    }
   }
 
   private fun setUpAddButton() {

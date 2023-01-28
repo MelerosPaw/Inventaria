@@ -24,8 +24,8 @@ object ImageManager {
     PicturesTakenFileProvider.getUriForPicture(imagePath, context)
 
   /**
-   * Returns true if the picture was taken by the camera and could be deleted or if it wasn't taken by the app, in
-   * which case we mustn't delete it so the deletion is considered to have been successful.
+   * @return Returns `true` if the picture was taken by the camera and could be deleted or if it wasn't taken by the app,
+   * in which case we mustn't delete and consider everything is OK.
    */
   fun deletePicture(path: CharSequence, context: Context): Boolean =
     !PicturesTakenFileProvider.isFromCamera(path)

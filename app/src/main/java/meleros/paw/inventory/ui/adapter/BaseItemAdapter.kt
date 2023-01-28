@@ -18,7 +18,7 @@ abstract class BaseItemAdapter(
     private const val ON_SELECTION_MODE_CHANGED = "SELECTION_MODE_ENABLED"
   }
 
-  val data: MutableList<ItemVO> = LinkedList(data)
+  private val data: MutableList<ItemVO> = LinkedList(data)
 
   override fun onBindViewHolder(holder: BaseItemViewHolder, position: Int) {
     holder.bind(data[position])
@@ -27,10 +27,10 @@ abstract class BaseItemAdapter(
   override fun getItemCount(): Int = data.size
 
   override fun onBindViewHolder(holder: BaseItemViewHolder, position: Int, payloads: MutableList<Any>) {
-    super.onBindViewHolder(holder, position, payloads)
-
     if (payloads.contains(ON_SELECTION_MODE_CHANGED)) {
-      holder.setSelectable(isInSelectionMode)
+      holder.setSelectable(isInSelectionMode, data[position], true)
+    } else {
+      super.onBindViewHolder(holder, position, payloads)
     }
   }
 
@@ -51,35 +51,39 @@ abstract class BaseItemAdapter(
 
   abstract class BaseItemViewHolder(
     itemView: View,
-    private var isSelectionModeEnabled: Boolean,
     protected var onClickListener: (ItemVO) -> Unit,
+    protected var isSelectionModeEnabled: () -> Boolean,
   ): RecyclerView.ViewHolder(itemView) {
 
     abstract fun getSelectionCheckBox(): CheckBox
 
     open fun bind(item: ItemVO) {
       itemView.setOnClickListener {
-        if (isSelectionModeEnabled) {
+        if (isSelectionModeEnabled()) {
           getSelectionCheckBox().isChecked = !item.isSelected
         } else {
           onClickListener(item)
         }
       }
 
-      setSelectable(isSelectionModeEnabled)
+      setSelectable(isSelectionModeEnabled(), item, false)
       setSelected(item.isSelected, item)
     }
 
-    fun setSelectable(selectable: Boolean) {
-      isSelectionModeEnabled = selectable
+    fun setSelectable(selectable: Boolean, item: ItemVO, isPartialBinding: Boolean) {
       getSelectionCheckBox().isVisible = selectable
+
+      if (isPartialBinding && !selectable) {
+        setSelected(false, item)
+      }
     }
 
     private fun setSelected(isSelected: Boolean, item: ItemVO) {
       getSelectionCheckBox().run {
         setOnCheckedChangeListener(null)
         isChecked = isSelected
-        setOnCheckedChangeListener { _, isChecked -> item.isSelected = isChecked } // Tal vez esto esté mejor en el view model, con un listener?
+        setOnCheckedChangeListener { _, isChecked -> item.isSelected = isChecked }
+        // Tal vez esto esté mejor en el view model, con un listener?
       }
     }
   }

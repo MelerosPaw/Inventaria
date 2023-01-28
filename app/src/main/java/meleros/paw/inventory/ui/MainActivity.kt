@@ -10,8 +10,11 @@ import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import meleros.paw.inventory.R
 import meleros.paw.inventory.databinding.ActivityMainBinding
+import meleros.paw.inventory.extension.hide
+import meleros.paw.inventory.extension.show
+import meleros.paw.inventory.ui.viewmodel.BaseViewModel
 
-class MainActivity : AppCompatActivity(), SelectionModeListener, TitleHolder {
+class MainActivity : AppCompatActivity(), SelectionModeListener, TitleHolder, OverallLoader {
 
   private lateinit var appBarConfiguration: AppBarConfiguration
   private lateinit var binding: ActivityMainBinding
@@ -34,16 +37,43 @@ class MainActivity : AppCompatActivity(), SelectionModeListener, TitleHolder {
         || super.onSupportNavigateUp()
   }
 
+  private fun startLoading(message: CharSequence? = null) {
+    binding.loaderOverall.apply {
+      text = message
+      show()
+    }
+  }
+
+  private fun stopLoading() {
+    binding.loaderOverall.apply {
+      hide()
+      text = null
+    }
+  }
+
+  //region SelectionModeListener
   override fun onSelectionModeChanged(@StringRes toolbarTitle: Int, @ColorInt toolbarColor: Int) {
     binding.toolbar.run {
       setTitle(toolbarTitle)
       setBackgroundColor(toolbarColor)
     }
   }
+  //endregion
 
+  //region TitleHolder
   override fun setTitleInToolbar(title: CharSequence) {
     binding.toolbar.run {
       setTitle(title)
     }
   }
+  //endregion
+
+  //region OverallLoader
+  override fun updateState(state: BaseViewModel.LoadingState) {
+    when (state) {
+      is BaseViewModel.LoadingState.Loading -> startLoading(state.message)
+      is BaseViewModel.LoadingState.NotLoading -> stopLoading()
+    }
+  }
+  //endregion
 }

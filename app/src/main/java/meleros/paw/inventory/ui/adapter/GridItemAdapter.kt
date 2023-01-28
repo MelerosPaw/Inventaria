@@ -17,14 +17,14 @@ class GridItemAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseItemViewHolder {
     val binding = RowGridItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-    return GridItemViewHolder(binding, isInSelectionMode, onClickListener)
+    return GridItemViewHolder(binding, onClickListener) { isInSelectionMode }
   }
 
   class GridItemViewHolder(
     private val binding: RowGridItemBinding,
-    isSelectionModeEnabled: Boolean,
     onClickListener: (ItemVO) -> Unit,
-  ) : BaseItemViewHolder(binding.root, isSelectionModeEnabled, onClickListener) {
+    isSelectionModeEnabled: () -> Boolean
+  ) : BaseItemViewHolder(binding.root, onClickListener, isSelectionModeEnabled) {
 
     override fun bind(item: ItemVO) {
       super.bind(item)

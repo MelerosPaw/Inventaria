@@ -17,14 +17,14 @@ class ListItemAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListItemViewHolder {
     val binding = RowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-    return ListItemViewHolder(binding, isInSelectionMode, onClickListener)
+    return ListItemViewHolder(binding, onClickListener) { isInSelectionMode }
   }
 
   class ListItemViewHolder(
     private val binding: RowItemBinding,
-    isSelectionModeEnabled: Boolean,
     onClickListener: (ItemVO) -> Unit,
-  ) : BaseItemViewHolder(binding.root, isSelectionModeEnabled, onClickListener) {
+    isInSelectionMode: () -> Boolean,
+  ) : BaseItemViewHolder(binding.root, onClickListener, isInSelectionMode) {
 
     override fun bind(item: ItemVO) {
       super.bind(item)
