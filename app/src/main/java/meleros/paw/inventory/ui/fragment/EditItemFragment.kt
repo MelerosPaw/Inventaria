@@ -2,6 +2,7 @@ package meleros.paw.inventory.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,11 @@ class EditItemFragment : BaseFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+
+    binding?.editDescription?.let {
+      it.inputType = it.inputType or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+    }
+
     val creationDateForEdition = args.itemCreationDateForEdition
     viewModel.setEditionModeParams(creationDateForEdition)
     val isInEditionMode = viewModel.isInEditionMode
