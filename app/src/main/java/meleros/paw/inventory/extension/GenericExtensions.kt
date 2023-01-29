@@ -1,3 +1,3 @@
 package meleros.paw.inventory.extension
 
-fun <T> T?.orNot() = this != null
+fun <T> T?.orNot(): Boolean = this != null

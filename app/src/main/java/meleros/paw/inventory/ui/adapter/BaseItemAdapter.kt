@@ -73,8 +73,8 @@ abstract class BaseItemAdapter(
     fun setSelectable(selectable: Boolean, item: ItemVO, isPartialBinding: Boolean) {
       getSelectionCheckBox().isVisible = selectable
 
-      if (isPartialBinding && !selectable) {
-        setSelected(false, item)
+      if (isPartialBinding) {
+        setSelected(item.isSelected, item)
       }
     }
 

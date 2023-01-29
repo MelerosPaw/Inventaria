@@ -47,11 +47,13 @@ class QuantityView @JvmOverloads constructor(
       if (amount > minAmount) {
         amount--
       }
+      removeFocusFromTextView()
     }
     binding.btnIncrease.setOnClickListener {
       if (amount < maxAmount) {
         amount++
       }
+      removeFocusFromTextView()
     }
   }
 
@@ -75,6 +77,10 @@ class QuantityView @JvmOverloads constructor(
       btnDecrease.imageTintList = getButtonIconColor(decreaseButtonEnabled)
       btnIncrease.imageTintList = getButtonIconColor(increaseButtonEnabled)
     }
+  }
+
+  private fun removeFocusFromTextView() {
+    binding.inputAmount.clearFocus()
   }
 
   private fun getButtonBackgroundColor(isEnabled: Boolean): ColorStateList {

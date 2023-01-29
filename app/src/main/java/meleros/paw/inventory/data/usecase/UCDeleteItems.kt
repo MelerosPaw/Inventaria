@@ -5,13 +5,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import meleros.paw.inventory.bo.Item
-import meleros.paw.inventory.data.PicturesTakenFileProvider
 import meleros.paw.inventory.data.db.InventoryDB
-import meleros.paw.inventory.extension.orNot
-import meleros.paw.inventory.ui.viewmodel.ImageManager
+import meleros.paw.inventory.manager.ImageManager
 
 class UCDeleteItems(db: InventoryDB) {
 

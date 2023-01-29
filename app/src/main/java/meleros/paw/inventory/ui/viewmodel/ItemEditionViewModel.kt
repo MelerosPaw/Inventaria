@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import meleros.paw.inventory.manager.ImageManager
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.data.usecase.UCCreateItems
 import meleros.paw.inventory.data.usecase.UCEditItem

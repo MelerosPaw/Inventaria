@@ -76,6 +76,7 @@
     android:hint="@string/description"
     android:importantForAutofill="no"
     android:inputType="textMultiLine"
+    android:singleLine="false"
     app:layout_constraintBottom_toTopOf="@id/btn__create_item"
     app:layout_constraintEnd_toEndOf="@id/guideline__margin_end"
     app:layout_constraintStart_toStartOf="@id/guideline__margin_start"

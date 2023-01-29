@@ -6,14 +6,13 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.withContext
+import meleros.paw.inventory.manager.ImageManager
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.data.ItemListLayout
 import meleros.paw.inventory.data.ItemListSorting
@@ -29,7 +28,6 @@ import meleros.paw.inventory.data.usecase.UCGetItems
 import meleros.paw.inventory.extension.ITEM_LIST_LAYOUT
 import meleros.paw.inventory.extension.ITEM_LIST_SORTING
 import meleros.paw.inventory.extension.dataStore
-import meleros.paw.inventory.ui.Event
 import meleros.paw.inventory.ui.vo.ItemVO
 import java.io.IOException
 
@@ -101,6 +99,8 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
       deselectAllItems()
     }
   }
+
+  fun getSelectedItemCount() : Int? = currentVOs?.count { it.isSelected }
 
   fun selectAllItems() {
     currentVOs?.forEach { it.isSelected = true }
@@ -177,8 +177,8 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
         when (sorting) {
           ALPHABETICALLY -> vos.sortedBy { it.name }
           ALPHABETICALLY_REVERSED -> vos.sortedByDescending { it.name }
-          LESS_QUANTITY -> vos.sortedBy { it.quantity.toInt() }
-          GREATER_QUANTITY -> vos.sortedByDescending { it.quantity.toInt() }
+          LESS_QUANTITY -> vos.sortedWith(QuantityComparator(false))
+          GREATER_QUANTITY -> vos.sortedWith(QuantityComparator(true))
           MOST_RECENT_FIRST -> vos.sortedByDescending { it.creationDate }
           OLDEST_FIRST -> vos.sortedBy { it.creationDate }
         }.also { currentVOs = it }
@@ -202,7 +202,11 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     }
   }
 
-  private suspend fun processItems(it: Preferences, items: List<ItemVO>): ItemListUpdate = withContext(Dispatchers.Default) {
+  private suspend fun processItems(
+    it: Preferences,
+    items: List<ItemVO>,
+    dispatcher: CoroutineDispatcher = Dispatchers.Default,
+  ): ItemListUpdate = withContext(dispatcher) {
     // Obtiene la disposición de la lista
     val layout = getLayoutType(it)
 
@@ -222,4 +226,25 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     /** The current list of items on display before the change happens. */
     val currentItems: List<ItemVO>?,
   )
+
+  class QuantityComparator(private val descending: Boolean): Comparator<ItemVO> {
+    override fun compare(o1: ItemVO?, o2: ItemVO?): Int {
+      val quantity1 = o1?.quantity?.toIntOrNull()
+      val quantity2 = o2?.quantity?.toIntOrNull()
+
+      return when {
+        quantity1 == null && quantity2 == null -> 0
+        quantity1 == null -> (-1).takeIf { !descending } ?: 1
+        quantity2 == null -> 1.takeIf { !descending } ?: -1
+        else -> quantity1.compareTo(quantity2).takeIf { it != 0 }
+          ?: run  {
+            if (!descending) {
+              o1.name.compareTo(o2.name)
+            } else {
+              o1.name.compareTo(o1.name)
+            }
+          }
+      }
+    }
+  }
 }

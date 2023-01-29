@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import meleros.paw.inventory.manager.ImageManager
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.data.mapper.toVo
 import meleros.paw.inventory.data.usecase.UCGetItem

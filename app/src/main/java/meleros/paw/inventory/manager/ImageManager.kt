@@ -1,4 +1,4 @@
-package meleros.paw.inventory.ui.viewmodel
+package meleros.paw.inventory.manager
 
 import android.content.Context
 import android.net.Uri

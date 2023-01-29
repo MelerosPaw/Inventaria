@@ -23,6 +23,8 @@ import meleros.paw.inventory.R
 import meleros.paw.inventory.data.ItemListLayout
 import meleros.paw.inventory.databinding.FragmentItemListBinding
 import meleros.paw.inventory.databinding.SelectionFabMenuBinding
+import meleros.paw.inventory.extension.orNot
+import meleros.paw.inventory.manager.ConfirmationDialogManager
 import meleros.paw.inventory.ui.OverallLoader
 import meleros.paw.inventory.ui.SelectionModeListener
 import meleros.paw.inventory.ui.adapter.BaseItemAdapter
@@ -93,9 +95,9 @@ class ItemListFragment : BaseFragment() {
 
   private fun SelectionFabMenuBinding.setUpDeselectAllButton() {
     btnDeselectAll.setOnClickListener {
-      (binding?.listItems?.adapter as? BaseItemAdapter)?.let {
+      (binding?.listItems?.adapter as? BaseItemAdapter)?.let { adapter ->
         viewModel.deselectAllItems()
-        it.onSelectedStateChanged()
+        adapter.onSelectedStateChanged()
       }
     }
   }
@@ -112,8 +114,12 @@ class ItemListFragment : BaseFragment() {
   private fun SelectionFabMenuBinding.setUpOnDeleteItemsButton() {
     btnDeleteItems.setOnClickListener {
       (binding?.listItems?.adapter as? BaseItemAdapter)?.let {
-        val itemsToDelete = viewModel.getSelectedItems()
-        deletionViewModel.deleteItems(itemsToDelete)
+        viewModel.getSelectedItemCount()?.let {
+          ConfirmationDialogManager().showDialog(this@ItemListFragment, it) {
+            val itemsToDelete = viewModel.getSelectedItems()
+            deletionViewModel.deleteItems(itemsToDelete)
+          }
+        }
       }
     }
   }
@@ -298,6 +304,7 @@ class ItemListFragment : BaseFragment() {
       this.menu = menu
       this.menuInflater = menuInflater
       menuInflater.inflate(R.menu.menu_item_list, menu)
+      fragmentWR.get()?.let { setSelectionModeEnabled(it.viewModel.isInSelectionMode) }
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

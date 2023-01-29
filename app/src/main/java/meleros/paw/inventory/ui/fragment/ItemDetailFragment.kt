@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import meleros.paw.inventory.R
 import meleros.paw.inventory.databinding.FragmentItemDetailBinding
+import meleros.paw.inventory.manager.ConfirmationDialogManager
 import meleros.paw.inventory.ui.TitleHolder
 import meleros.paw.inventory.ui.viewmodel.DeleteItemViewModel
 import meleros.paw.inventory.ui.viewmodel.ItemDetailViewModel
@@ -88,16 +89,7 @@ class ItemDetailFragment : BaseFragment() {
   }
 
   private fun openConfirmationDialog() {
-    ConfirmRemovalDialogFragment.newInstance(1)
-      .show(parentFragmentManager, ConfirmRemovalDialogFragment.TAG)
-
-    setFragmentResultListener(ConfirmRemovalDialogFragment.REQUEST_KEY) { key, data ->
-      if (key == ConfirmRemovalDialogFragment.REQUEST_KEY
-        && data.getBoolean(ConfirmRemovalDialogFragment.RESULT_EXTRA_CONFIRMED)
-      ) {
-        onConfirmItemRemoval()
-      }
-    }
+    ConfirmationDialogManager().showDialog(this, 1, ::onConfirmItemRemoval)
   }
 
   private fun onConfirmItemRemoval() {
