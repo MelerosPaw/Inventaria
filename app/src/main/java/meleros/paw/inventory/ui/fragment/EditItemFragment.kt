@@ -34,7 +34,6 @@ class EditItemFragment : BaseFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
     binding?.editDescription?.let {
       it.inputType = it.inputType or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
     }
@@ -64,6 +63,8 @@ class EditItemFragment : BaseFragment() {
 
   private fun tryAndSetUpEditionMode(isInEditionMode: Boolean, creationDate: Long) {
     if (isInEditionMode) {
+      val title: String = getString(R.string.edit_item_fragment_label, args.itemName)
+      (activity as? TitleHolder)?.setTitleInToolbar(title)
       viewModel.itemEditionLiveData.observe(viewLifecycleOwner) {
         drawItem(it)
       }
@@ -72,8 +73,6 @@ class EditItemFragment : BaseFragment() {
   }
 
   private fun drawItem(item: Item) {
-    val title: String = getString(R.string.edit_item_fragment_label, item.name)
-    (activity as? TitleHolder)?.setTitleInToolbar(title)
     binding?.run {
       pickerQuanitity.amount = item.quantity
       editItemName.setText(item.name)

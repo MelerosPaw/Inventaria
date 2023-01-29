@@ -29,12 +29,23 @@ open class BaseViewModel(app: Application): AndroidViewModel(app) {
   ) {
     viewModelScope.launch(dispatcher ?: Dispatchers.Main) {
       if (loading) {
-        _wipLiveData.value = Event(LoadingState.Loading(message))
+        setLoading(dispatcher, true, message)
         block()
-        _wipLiveData.value = Event(LoadingState.NotLoading())
+        setLoading(dispatcher, false, message)
       } else {
         block()
       }
+    }
+  }
+
+  private fun setLoading(dispatcher: CoroutineDispatcher?, isLoading: Boolean, message: CharSequence?) {
+    val state = if (isLoading) { LoadingState.Loading(message) } else { LoadingState.NotLoading()}
+    val event = Event(state)
+
+    if (dispatcher != Dispatchers.Main) {
+      _wipLiveData.value = event
+    } else {
+      _wipLiveData.postValue(event)
     }
   }
 

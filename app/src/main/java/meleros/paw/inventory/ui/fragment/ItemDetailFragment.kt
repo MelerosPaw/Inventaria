@@ -16,7 +16,9 @@ import androidx.navigation.fragment.navArgs
 import meleros.paw.inventory.R
 import meleros.paw.inventory.databinding.FragmentItemDetailBinding
 import meleros.paw.inventory.manager.ConfirmationDialogManager
+import meleros.paw.inventory.ui.OverallLoader
 import meleros.paw.inventory.ui.TitleHolder
+import meleros.paw.inventory.ui.viewmodel.BaseViewModel
 import meleros.paw.inventory.ui.viewmodel.DeleteItemViewModel
 import meleros.paw.inventory.ui.viewmodel.ItemDetailViewModel
 import meleros.paw.inventory.ui.vo.ItemVO
@@ -45,6 +47,7 @@ class ItemDetailFragment : BaseFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    setLoading(BaseViewModel.LoadingState.Loading("Cargando ${args.itemName}"))
 
     binding?.run {
       viewModel.itemDetailLiveData.observe(viewLifecycleOwner) { item ->
@@ -54,6 +57,7 @@ class ItemDetailFragment : BaseFragment() {
         labelDescription.text = item.description
         loadPicture(item.image)
         setUpEditButton(item)
+        setLoading(BaseViewModel.LoadingState.NotLoading())
       }
     }
   }
@@ -71,11 +75,11 @@ class ItemDetailFragment : BaseFragment() {
   }
 
   private fun FragmentItemDetailBinding.setUpEditButton(item: ItemVO) {
-    btnEditItem.setOnClickListener { navigateToEdit(item.creationDate) }
+    btnEditItem.setOnClickListener { navigateToEdit(item.creationDate, item.name) }
   }
 
-  private fun navigateToEdit(creationDate: Long) {
-    navigate(ItemDetailFragmentDirections.actionDetailToEdition(creationDate))
+  private fun navigateToEdit(creationDate: Long, name: String) {
+    navigate(ItemDetailFragmentDirections.actionDetailToEdition(creationDate, name))
   }
 
   private fun FragmentItemDetailBinding.loadPicture(imageUri: Uri?) {

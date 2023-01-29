@@ -285,7 +285,7 @@ class ItemListFragment : BaseFragment() {
   }
 
   private fun navigateToDetail(item: ItemVO) {
-    navigate(ItemListFragmentDirections.actionItemListToDetail(item.creationDate))
+    navigate(ItemListFragmentDirections.actionItemListToDetail(item.creationDate, item.name))
   }
 
   private fun navigateToCreate() {
