@@ -46,55 +46,62 @@
     app:layout_constraintStart_toEndOf="@id/guideline__margin_start"
     app:layout_constraintTop_toBottomOf="@id/guideline__margin_top" />
 
-    <TextView
-      android:id="@+id/label__item_name"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      app:layout_constrainedWidth="true"
-      app:layout_constrainedHeight="true"
-      android:textSize="22sp"
-      android:layout_marginEnd="8dp"
-      app:layout_constraintEnd_toStartOf="@id/label_quantity"
-      app:layout_constraintHorizontal_chainStyle="spread_inside"
-      app:layout_constraintStart_toEndOf="@id/guideline__margin_start"
-      app:layout_constraintTop_toBottomOf="@id/guideline__center_horizontal"
-      tools:text="El nombre de la cosa que estamos mirando"/>
+  <TextView
+    android:id="@+id/label__item_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="16dp"
+    android:textIsSelectable="true"
+    android:textSize="22sp"
+    app:layout_constrainedHeight="true"
+    app:layout_constrainedWidth="true"
+    app:layout_constraintEnd_toStartOf="@id/label_quantity"
+    app:layout_constraintHorizontal_chainStyle="spread_inside"
+    app:layout_constraintStart_toEndOf="@id/guideline__margin_start"
+    app:layout_constraintTop_toBottomOf="@id/guideline__center_horizontal"
+    tools:text="El nombre de la cosa que estamos mirando" />
 
-    <TextView
-      android:id="@+id/label_quantity"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textSize="22sp"
-      app:layout_constrainedHeight="true"
-      app:layout_constrainedWidth="true"
-      app:layout_constraintEnd_toStartOf="@id/guideline__margin_end"
-      app:layout_constraintStart_toEndOf="@id/label__item_name"
-      app:layout_constraintTop_toTopOf="@id/label__item_name"
-      tools:text="12"/>
+  <TextView
+    android:id="@+id/label_quantity"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="22sp"
+    app:layout_constrainedHeight="true"
+    app:layout_constrainedWidth="true"
+    app:layout_constraintEnd_toStartOf="@id/guideline__margin_end"
+    app:layout_constraintStart_toEndOf="@id/label__item_name"
+    app:layout_constraintTop_toTopOf="@id/label__item_name"
+    tools:text="12" />
+
+  <ScrollView
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginTop="4dp"
+    android:scrollbars="vertical"
+    app:layout_constraintBottom_toTopOf="@id/btn__edit_item"
+    app:layout_constraintEnd_toEndOf="@id/guideline__margin_end"
+    app:layout_constraintStart_toStartOf="@id/guideline__margin_start"
+    app:layout_constraintTop_toBottomOf="@id/label__item_name">
 
     <TextView
       android:id="@+id/label__description"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:layout_marginBottom="8dp"
-      android:layout_marginTop="4dp"
-      android:gravity="top"
-      android:scrollbars="vertical"
-      app:layout_constraintBottom_toTopOf="@id/btn__edit_item"
-      app:layout_constraintEnd_toEndOf="@id/guideline__margin_end"
-      app:layout_constraintStart_toStartOf="@id/guideline__margin_start"
-      app:layout_constraintTop_toBottomOf="@id/label__item_name"
-      tools:text="Este objeto tiene un montón de cosa sobre las que se puede hablar, aunque realmente esto es muy estúpido. Fíjate en que dá igual lo que escribas, si no te sirve para recordar algo que te vaya a aportar valor en tu vida, estarás escribiendo un texto para nada."/>
-
-    <Button
-      android:id="@+id/btn__edit_item"
-      style="@style/Button"
-      android:layout_width="0dp"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/edit"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
+      android:textIsSelectable="true"
+      tools:text="Este objeto tiene un montón de cosa sobre las que se puede hablar, aunque realmente esto es muy estúpido. Fíjate en que dá igual lo que escribas, si no te sirve para recordar algo que te vaya a aportar valor en tu vida, estarás escribiendo un texto para nada." />
+
+  </ScrollView>
+
+  <Button
+    android:id="@+id/btn__edit_item"
+    style="@style/Button"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:text="@string/edit"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>

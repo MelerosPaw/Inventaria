@@ -2,7 +2,6 @@ package meleros.paw.inventory.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -54,7 +53,6 @@ class ItemDetailFragment : BaseFragment() {
         labelItemName.text = item.name
         labelQuantity.text = item.quantity
         labelDescription.text = item.description
-        labelDescription.movementMethod = ScrollingMovementMethod()
         loadPicture(item.image)
         setUpEditButton(item)
         setLoading(BaseViewModel.LoadingState.NotLoading())
