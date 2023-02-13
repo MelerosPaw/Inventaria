@@ -2,6 +2,7 @@ package meleros.paw.inventory.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,13 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import meleros.paw.inventory.R
 import meleros.paw.inventory.databinding.FragmentItemDetailBinding
 import meleros.paw.inventory.manager.ConfirmationDialogManager
-import meleros.paw.inventory.ui.OverallLoader
 import meleros.paw.inventory.ui.TitleHolder
 import meleros.paw.inventory.ui.viewmodel.BaseViewModel
 import meleros.paw.inventory.ui.viewmodel.DeleteItemViewModel
@@ -53,8 +52,9 @@ class ItemDetailFragment : BaseFragment() {
       viewModel.itemDetailLiveData.observe(viewLifecycleOwner) { item ->
         (activity as? TitleHolder)?.setTitleInToolbar(item.name)
         labelItemName.text = item.name
-        labelQuanitity.text = item.quantity
+        labelQuantity.text = item.quantity
         labelDescription.text = item.description
+        labelDescription.movementMethod = ScrollingMovementMethod()
         loadPicture(item.image)
         setUpEditButton(item)
         setLoading(BaseViewModel.LoadingState.NotLoading())

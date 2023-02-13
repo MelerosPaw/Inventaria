@@ -55,14 +55,14 @@
       app:layout_constrainedHeight="true"
       android:textSize="22sp"
       android:layout_marginEnd="8dp"
-      app:layout_constraintEnd_toStartOf="@id/label__quanitity"
+      app:layout_constraintEnd_toStartOf="@id/label_quantity"
       app:layout_constraintHorizontal_chainStyle="spread_inside"
       app:layout_constraintStart_toEndOf="@id/guideline__margin_start"
       app:layout_constraintTop_toBottomOf="@id/guideline__center_horizontal"
       tools:text="El nombre de la cosa que estamos mirando"/>
 
     <TextView
-      android:id="@+id/label__quanitity"
+      android:id="@+id/label_quantity"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textSize="22sp"
@@ -80,6 +80,7 @@
       android:layout_marginBottom="8dp"
       android:layout_marginTop="4dp"
       android:gravity="top"
+      android:scrollbars="vertical"
       app:layout_constraintBottom_toTopOf="@id/btn__edit_item"
       app:layout_constraintEnd_toEndOf="@id/guideline__margin_end"
       app:layout_constraintStart_toStartOf="@id/guideline__margin_start"
