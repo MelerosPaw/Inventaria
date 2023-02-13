@@ -109,11 +109,11 @@ class EditItemFragment : BaseFragment() {
   private fun modifyItem(isInEditionMode: Boolean) {
     binding?.run {
       val name: CharSequence = editItemName.text
-      val quantity: Int = pickerQuanitity.amount
+      val quantity: Int? = pickerQuanitity.amount
 
       verifyName(name, editItemName)
 
-      if (quantity > 0 && name.isNotBlank()) {
+      if (quantity != null && quantity > 0 && name.isNotBlank()) {
         val description: CharSequence = editDescription.text
 
         if (isInEditionMode) {

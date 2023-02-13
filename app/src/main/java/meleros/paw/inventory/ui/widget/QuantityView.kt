@@ -2,13 +2,17 @@ package meleros.paw.inventory.ui.widget
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.text.Editable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View.OnFocusChangeListener
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import meleros.paw.inventory.R
 import meleros.paw.inventory.databinding.QuantityViewBinding
+import meleros.paw.inventory.extension.hideKeyboard
+import meleros.paw.inventory.extension.isTrue
 
 class QuantityView @JvmOverloads constructor(
   context: Context,
@@ -16,8 +20,8 @@ class QuantityView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs) {
 
   private val binding: QuantityViewBinding
-  var amount: Int
-    get() = binding.inputAmount.text.toString().toIntOrNull() ?: 0
+  var amount: Int?
+    get() = binding.inputAmount.text.toValidQuantity()
     set(value) {
       if (value in minAmount.. maxAmount) {
         binding.inputAmount.setText(value.toString())
@@ -44,31 +48,67 @@ class QuantityView @JvmOverloads constructor(
 
   private fun setUpButtons() {
     binding.btnDecrease.setOnClickListener {
-      if (amount > minAmount) {
-        amount--
+      if (amountExceedsUpperLimit()) {
+        amount = maxAmount
+      } else if (amount?.canBeDecreased().isTrue()) {
+        amount = amount?.dec()
       }
+
       removeFocusFromTextView()
+      hideKeyboard()
+      removeError()
     }
+
     binding.btnIncrease.setOnClickListener {
-      if (amount < maxAmount) {
-        amount++
-      }
+      amount
+        ?.takeIf { it.canBeIncreased() }
+        ?.let { amount = it.inc() }
       removeFocusFromTextView()
+      hideKeyboard()
+      removeError()
     }
   }
 
   private fun setUpTextField() {
-    binding.inputAmount.doAfterTextChanged {
-      val error: String? = "La cantidad debe ser al menos $minAmount".takeIf { amount < minAmount }
-      binding.inputAmount.error = error
-      onAmountChanged()
+    binding.inputAmount.doAfterTextChanged { text ->
+      val currentAmount = amount
+      when {
+        text.isNullOrBlank() || currentAmount == null -> setAmountOutOfBoundsError()
+        currentAmount > maxAmount -> amount = maxAmount
+        currentAmount < minAmount -> amount = minAmount
+        else -> onAmountChanged()
+      }
+    }
+
+    binding.inputAmount.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+      with(binding.inputAmount) {
+        if (!hasFocus && text.isNotAValidValue()) {
+          amount = minAmount
+          hideKeyboard()
+          removeError()
+        }
+      }
     }
   }
 
+  private fun setAmountOutOfBoundsError() {
+    val error = "La cantidad debe estar entre $minAmount y $maxAmount"
+    binding.inputAmount.error = error
+    onAmountChanged()
+  }
+
+  private fun removeError() {
+    binding.inputAmount.error = null
+  }
+
+  private fun Editable?.isNotAValidValue() = isNullOrBlank() || amount.exceedsLimits()
+
+  private fun CharSequence.toValidQuantity(): Int? = toString().toIntOrNull()
+
   private fun onAmountChanged() {
     with(binding) {
-      val decreaseButtonEnabled = amount > minAmount
-      val increaseButtonEnabled = amount < maxAmount
+      val decreaseButtonEnabled = amount?.canBeDecreased().isTrue() || amountExceedsUpperLimit()
+      val increaseButtonEnabled = amount?.canBeIncreased().isTrue() || inputAmount.text.isBlank()
 
       btnDecrease.isEnabled = decreaseButtonEnabled
       btnIncrease.isEnabled = increaseButtonEnabled
@@ -78,6 +118,14 @@ class QuantityView @JvmOverloads constructor(
       btnIncrease.imageTintList = getButtonIconColor(increaseButtonEnabled)
     }
   }
+
+  private fun amountExceedsUpperLimit() = amount == null && binding.inputAmount.text.isNotBlank()
+
+  private fun Int?.exceedsLimits(): Boolean = this == null || this !in minAmount..maxAmount
+
+  private fun Int.canBeIncreased(): Boolean = this < maxAmount
+
+  private fun Int.canBeDecreased(): Boolean = this > minAmount
 
   private fun removeFocusFromTextView() {
     binding.inputAmount.clearFocus()
