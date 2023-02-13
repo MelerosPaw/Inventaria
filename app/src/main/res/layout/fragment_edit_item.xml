@@ -28,7 +28,7 @@
     app:layout_constraintGuide_end="16dp"/>
 
   <androidx.constraintlayout.widget.Guideline
-    android:id="@+id/guideline__center_horizontal"
+    android:id="@+id/guideline__center_vertical"
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:orientation="horizontal"
@@ -38,7 +38,7 @@
     android:id="@+id/image_viewer__photo"
     android:layout_width="0dp"
     android:layout_height="0dp"
-    app:layout_constraintBottom_toBottomOf="@id/guideline__center_horizontal"
+    app:layout_constraintBottom_toBottomOf="@id/guideline__center_vertical"
     app:layout_constraintEnd_toEndOf="@id/guideline__margin_end"
     app:layout_constraintStart_toStartOf="@id/guideline__margin_start"
     app:layout_constraintTop_toTopOf="@id/guideline__margin_top" />
@@ -52,7 +52,7 @@
     android:layout_marginTop="8dp"
     app:layout_constraintEnd_toStartOf="@id/guideline__margin_end"
     app:layout_constraintStart_toEndOf="@id/guideline__margin_start"
-    app:layout_constraintTop_toBottomOf="@id/guideline__center_horizontal" />
+    app:layout_constraintTop_toBottomOf="@id/guideline__center_vertical" />
 
   <EditText
     android:id="@+id/edit__item_name"

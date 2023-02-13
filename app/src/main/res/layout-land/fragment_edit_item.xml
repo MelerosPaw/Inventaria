@@ -1,110 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".ui.fragment.ItemDetailFragment">
+  tools:context=".ui.fragment.EditItemFragment">
 
-<!--region Guidelines-->
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/guideline__margin_top"
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:orientation="horizontal"
-    app:layout_constraintGuide_begin="16dp" />
+    app:layout_constraintGuide_begin="16dp"/>
 
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/guideline__margin_start"
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:orientation="vertical"
-    app:layout_constraintGuide_begin="16dp" />
+    app:layout_constraintGuide_begin="16dp"/>
 
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/guideline__margin_end"
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:orientation="vertical"
-    app:layout_constraintGuide_end="16dp" />
+    app:layout_constraintGuide_end="16dp"/>
 
   <androidx.constraintlayout.widget.Guideline
     android:id="@+id/guideline__center_horizontal"
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:orientation="vertical"
-    app:layout_constraintGuide_percent="0.5" />
-  <!--endregion-->
+    app:layout_constraintGuide_percent="0.5"/>
 
   <meleros.paw.inventory.ui.widget.FramedPhotoViewerView
     android:id="@+id/image_viewer__photo"
     android:layout_width="0dp"
     android:layout_height="0dp"
-    android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
-    app:displayControls="false"
-    app:layout_constraintBottom_toTopOf="@id/btn__edit_item"
+    android:layout_marginEnd="8dp"
+    app:layout_constraintBottom_toTopOf="@id/btn__create_item"
     app:layout_constraintEnd_toStartOf="@id/guideline__center_horizontal"
-    app:layout_constraintStart_toEndOf="@id/guideline__margin_start"
+    app:layout_constraintStart_toStartOf="@id/guideline__margin_start"
     app:layout_constraintTop_toTopOf="@id/guideline__margin_top" />
 
-  <TextView
-    android:id="@+id/label__item_name"
+  <meleros.paw.inventory.ui.widget.QuantityView
+    android:id="@+id/picker__quanitity"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:textIsSelectable="true"
-    android:textSize="22sp"
     app:layout_constrainedHeight="true"
     app:layout_constrainedWidth="true"
-    app:layout_constraintEnd_toStartOf="@id/label_quantity"
-    app:layout_constraintHorizontal_chainStyle="spread_inside"
+    android:layout_marginBottom="8dp"
+    app:layout_constraintEnd_toEndOf="@id/guideline__margin_end"
     app:layout_constraintStart_toEndOf="@id/guideline__center_horizontal"
-    app:layout_constraintTop_toBottomOf="@id/guideline__margin_top"
-    tools:text="El nombre de la cosa que estamos mirando" />
+    app:layout_constraintBottom_toTopOf="@id/btn__create_item" />
 
-  <TextView
-    android:id="@+id/label_quantity"
-    android:layout_width="wrap_content"
+  <EditText
+    android:id="@+id/edit__item_name"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:textSize="22sp"
-    app:layout_constrainedHeight="true"
-    app:layout_constrainedWidth="true"
+    android:layout_marginStart="8dp"
+    android:hint="@string/name"
+    android:importantForAutofill="no"
+    android:inputType="text"
+    android:lines="1"
     app:layout_constraintEnd_toStartOf="@id/guideline__margin_end"
-    app:layout_constraintStart_toEndOf="@id/label__item_name"
-    app:layout_constraintTop_toTopOf="@id/label__item_name"
-    tools:text="12" />
+    app:layout_constraintStart_toEndOf="@id/guideline__center_horizontal"
+    app:layout_constraintTop_toBottomOf="@id/guideline__margin_top" />
 
-  <ScrollView
+  <EditText
+    android:id="@+id/edit__description"
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:layout_marginBottom="8dp"
     android:layout_marginStart="8dp"
-    android:layout_marginTop="4dp"
-    android:scrollbars="vertical"
-    app:layout_constraintBottom_toTopOf="@id/btn__edit_item"
+    android:gravity="top"
+    android:hint="@string/description"
+    android:importantForAutofill="no"
+    android:inputType="textMultiLine"
+    android:singleLine="false"
+    app:layout_constraintBottom_toTopOf="@id/picker__quanitity"
     app:layout_constraintEnd_toEndOf="@id/guideline__margin_end"
     app:layout_constraintStart_toEndOf="@id/guideline__center_horizontal"
-    app:layout_constraintTop_toBottomOf="@id/label__item_name">
-
-  <TextView
-      android:id="@+id/label__description"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textIsSelectable="true"
-      tools:text="Este objeto tiene un montón de cosa sobre las que se puede hablar, aunque realmente esto es muy estúpido. Fíjate en que dá igual lo que escribas, si no te sirve para recordar algo que te vaya a aportar valor en tu vida, estarás escribiendo un texto para nada." />
-
-  </ScrollView>
+    app:layout_constraintTop_toBottomOf="@id/edit__item_name" />
 
   <Button
-    android:id="@+id/btn__edit_item"
+    android:id="@+id/btn__create_item"
     style="@style/Button"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:text="@string/edit"
+    android:text="@string/save"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent" />
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
