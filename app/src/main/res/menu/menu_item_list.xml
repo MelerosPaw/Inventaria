@@ -46,9 +46,15 @@
         app:showAsAction="never" />
 
       <item
-        android:id="@+id/action_lay_out_as_grid"
+        android:id="@+id/action_lay_out_as_grid_2"
         android:orderInCategory="2"
-        android:title="@string/layout_grid"
+        android:title="@string/layout_grid_2"
+        app:showAsAction="never" />
+
+      <item
+        android:id="@+id/action_lay_out_as_grid_4"
+        android:orderInCategory="3"
+        android:title="@string/layout_grid_4"
         app:showAsAction="never" />
 
     </menu>

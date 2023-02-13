@@ -122,8 +122,12 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     changeSorting { currentSorting -> OLDEST_FIRST.takeIf { currentSorting == MOST_RECENT_FIRST } ?: MOST_RECENT_FIRST }
   }
 
-  fun layOutItemsAsGrid() {
-    changeItemListLayout(ItemListLayout.GRID)
+  fun layOutItemsAsGrid2() {
+    changeItemListLayout(ItemListLayout.GRID_2)
+  }
+
+  fun layOutItemsAsGrid4() {
+    changeItemListLayout(ItemListLayout.GRID_4)
   }
 
   fun layOutItemsAsList() {

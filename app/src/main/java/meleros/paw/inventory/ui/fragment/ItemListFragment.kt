@@ -23,7 +23,6 @@ import meleros.paw.inventory.R
 import meleros.paw.inventory.data.ItemListLayout
 import meleros.paw.inventory.databinding.FragmentItemListBinding
 import meleros.paw.inventory.databinding.SelectionFabMenuBinding
-import meleros.paw.inventory.extension.orNot
 import meleros.paw.inventory.manager.ConfirmationDialogManager
 import meleros.paw.inventory.ui.OverallLoader
 import meleros.paw.inventory.ui.SelectionModeListener
@@ -68,7 +67,7 @@ class ItemListFragment : BaseFragment() {
 
   private fun setUpLoader() {
     viewModel.wipLiveData.observe(viewLifecycleOwner) {
-      it.get()?.  let { state ->
+      it.get()?.let { state ->
         (activity as? OverallLoader)?.updateState(state)
       }
     }
@@ -125,8 +124,8 @@ class ItemListFragment : BaseFragment() {
   }
 
   private fun setUpItemList() {
-    viewModel.itemListLiveData.observe(viewLifecycleOwner) { items ->
-      items?.let(::drawItems)
+    viewModel.itemListLiveData.observe(viewLifecycleOwner) { update ->
+      update?.let(::drawItems)
     }
 
     deletionViewModel.itemsDeletedLiveData.observe(viewLifecycleOwner) {
@@ -175,14 +174,14 @@ class ItemListFragment : BaseFragment() {
     val isInSelectionMode = viewModel.isInSelectionMode
     adapter = when (layout) {
       ItemListLayout.LIST -> ListItemAdapter(newItems, isInSelectionMode, ::navigateToDetail)
-      ItemListLayout.GRID -> GridItemAdapter(newItems, isInSelectionMode, ::navigateToDetail)
+      ItemListLayout.GRID_2, ItemListLayout.GRID_4 -> GridItemAdapter(newItems, isInSelectionMode, ::navigateToDetail)
     }
   }
 
   private fun RecyclerView.updateLayoutManager(layout: ItemListLayout) {
     layoutManager = when (layout) {
       ItemListLayout.LIST -> LinearLayoutManager(context)
-      ItemListLayout.GRID -> GridLayoutManager(context, 2)
+      ItemListLayout.GRID_2, ItemListLayout.GRID_4 -> GridLayoutManager(context, layout.itemsPerRow)
     }
   }
 
@@ -199,8 +198,8 @@ class ItemListFragment : BaseFragment() {
     val adapter = this.adapter
 
     if (items != null && adapter is BaseItemAdapter) {
-      val currentLayoutIsDifferent = layout == ItemListLayout.LIST && adapter is GridItemAdapter
-          || layout == ItemListLayout.GRID && adapter is ListItemAdapter
+      val currentLayoutIsDifferent = (layout == ItemListLayout.LIST && adapter is GridItemAdapter)
+            || adapter is ListItemAdapter || layout.itemsPerRow != (layoutManager as? GridLayoutManager)?.spanCount
 
       if (currentLayoutIsDifferent) {
         setUpAdapter(layout, items)
@@ -313,7 +312,8 @@ class ItemListFragment : BaseFragment() {
         R.id.action_sort_alphabetically -> { viewModel?.sortItemsAlphabetically(); true }
         R.id.action_sort_by_creation_date -> { viewModel?.sortItemsByCreationDate(); true }
         R.id.action_lay_out_as_list -> { viewModel?.layOutItemsAsList(); true }
-        R.id.action_lay_out_as_grid -> { viewModel?.layOutItemsAsGrid(); true }
+        R.id.action_lay_out_as_grid_2 -> { viewModel?.layOutItemsAsGrid2(); true }
+        R.id.action_lay_out_as_grid_4 -> { viewModel?.layOutItemsAsGrid4(); true }
         R.id.action_enable_selection_mode -> { setSelectionModeEnabled(true); true }
         R.id.action_disable_selection_mode -> { setSelectionModeEnabled(false); true }
         else -> false

@@ -18,18 +18,20 @@
 
   <EditText
     android:id="@+id/input__amount"
-    android:inputType="number"
-    android:minEms="1"
-    android:layout_height="wrap_content"
     android:layout_width="wrap_content"
-    android:layout_marginHorizontal="12dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:text="1"
-    android:textSize="18sp"
-    android:gravity="center_horizontal"
+    android:layout_marginHorizontal="12dp"
     android:background="@null"
+    android:gravity="center_horizontal"
+    android:importantForAutofill="no"
+    android:inputType="number"
+    android:maxEms="8"
+    android:maxLength="9"
+    android:minEms="1"
+    android:textSize="18sp"
     tools:ignore="HardcodedText"
-    android:importantForAutofill="no" />
+    tools:text="1" />
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/btn__increase"

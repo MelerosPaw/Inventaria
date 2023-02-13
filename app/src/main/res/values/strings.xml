@@ -15,7 +15,8 @@
   <string name="sort_by_quantity">Ordenar por cantidad</string>
   <string name="sort_by_creation_date">Ordenar fecha de creación</string>
   <string name="layout_list">Lista</string>
-  <string name="layout_grid">Cuadrícula</string>
+  <string name="layout_grid_2">2 columnas</string>
+  <string name="layout_grid_4">4 columnas</string>
   <string name="content_description__add_item">Añadir artículo</string>
   <string name="clear_selection">Deseleccionar todo</string>
   <string name="select_everything">Seleccionar todo</string>
