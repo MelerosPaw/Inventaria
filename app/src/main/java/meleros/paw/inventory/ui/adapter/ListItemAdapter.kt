@@ -4,27 +4,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import androidx.core.view.isVisible
 import meleros.paw.inventory.databinding.RowItemBinding
-import meleros.paw.inventory.extension.isTrue
 import meleros.paw.inventory.ui.vo.ItemVO
 
 class ListItemAdapter(
   data: List<ItemVO>,
   isSelectionModeEnabled: Boolean,
   onClickListener: (ItemVO) -> Unit,
-) : BaseItemAdapter(data, isSelectionModeEnabled, onClickListener) {
+  onLongClickListener: (ItemVO, View) -> Unit,
+) : BaseItemAdapter(data, isSelectionModeEnabled, onClickListener, onLongClickListener) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListItemViewHolder {
     val binding = RowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-    return ListItemViewHolder(binding, onClickListener) { isInSelectionMode }
+    return ListItemViewHolder(binding, onClickListener, { isInSelectionMode }, onLongClickListener)
   }
 
   class ListItemViewHolder(
     private val binding: RowItemBinding,
     onClickListener: (ItemVO) -> Unit,
     isInSelectionMode: () -> Boolean,
-  ) : BaseItemViewHolder(binding.root, onClickListener, isInSelectionMode) {
+    onLongClickListener: (ItemVO, View) -> Unit,
+  ) : BaseItemViewHolder(binding.root, onClickListener, isInSelectionMode, onLongClickListener) {
 
     override fun bind(item: ItemVO) {
       super.bind(item)

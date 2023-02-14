@@ -26,6 +26,8 @@
   <string name="menu_option__layout">Visualizar</string>
   <string name="menu_option__select_items">Seleccionar</string>
   <string name="menu_option__deselect_items">Deseleccionar</string>
+  <string name="menu_option__delete">Eliminar</string>
+  <string name="menu_option__edit">Editar</string>
   <string name="close_selection_mode">Dejar de seleccionar</string>
   <string name="no">No</string>
   <string name="yes">Sí</string>

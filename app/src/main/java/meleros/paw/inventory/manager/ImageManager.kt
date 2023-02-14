@@ -21,7 +21,7 @@ object ImageManager {
     }
 
   private fun createValidUri(imagePath: CharSequence, context: Context): Uri? =
-    PicturesTakenFileProvider.getUriForPicture(imagePath, context)
+    PicturesTakenFileProvider.getUriForExistingPicture(imagePath, context)
 
   /**
    * @return Returns `true` if the picture was taken by the camera and could be deleted or if it wasn't taken by the app,
@@ -29,7 +29,7 @@ object ImageManager {
    */
   fun deletePicture(path: CharSequence, context: Context): Boolean =
     !PicturesTakenFileProvider.isFromCamera(path)
-        || PicturesTakenFileProvider.getUriForPicture(path, context)?.let { uri ->
+        || PicturesTakenFileProvider.getUriForExistingPicture(path, context)?.let { uri ->
       context.contentResolver.delete(uri, null, null) == 1
     }.orNot()
 }

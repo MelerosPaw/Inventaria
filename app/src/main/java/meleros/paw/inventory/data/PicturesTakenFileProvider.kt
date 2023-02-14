@@ -28,7 +28,7 @@ class PicturesTakenFileProvider: FileProvider(R.xml.provider_paths) {
       return getUriForFile(context, authority, photoFile)
     }
 
-    fun getUriForPicture(path: CharSequence, context: Context): Uri? =
+    fun getUriForExistingPicture(path: CharSequence, context: Context): Uri? =
       Uri.Builder()
         .scheme(scheme)
         .authority(authority)

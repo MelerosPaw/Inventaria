@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -173,8 +174,9 @@ class ItemListFragment : BaseFragment() {
   private fun RecyclerView.updateAdapter(layout: ItemListLayout, newItems: List<ItemVO>) {
     val isInSelectionMode = viewModel.isInSelectionMode
     adapter = when (layout) {
-      ItemListLayout.LIST -> ListItemAdapter(newItems, isInSelectionMode, ::navigateToDetail)
-      ItemListLayout.GRID_2, ItemListLayout.GRID_4 -> GridItemAdapter(newItems, isInSelectionMode, ::navigateToDetail)
+      ItemListLayout.LIST -> ListItemAdapter(newItems, isInSelectionMode, ::navigateToDetail, ::openContextMenu)
+      ItemListLayout.GRID_2, ItemListLayout.GRID_4 -> GridItemAdapter(newItems, isInSelectionMode, ::navigateToDetail,
+        ::openContextMenu)
     }
   }
 
@@ -291,6 +293,25 @@ class ItemListFragment : BaseFragment() {
     navigate(ItemListFragmentDirections.actionItemListToCreate())
   }
 
+  private fun openContextMenu(item: ItemVO, view: View) {
+    with(PopupMenu(view.context, view)) {
+      menuInflater.inflate(R.menu.menu_item_list_context, menu)
+
+      setOnMenuItemClickListener { menuItem ->
+        when (menuItem.itemId) {
+          R.id.action_delete_item -> onContextMenuDeleteClicked(item)
+          else -> false
+        }
+      }
+
+      show()
+    }
+  }
+
+  private fun onContextMenuDeleteClicked(item: ItemVO): Boolean {
+    ConfirmationDialogManager().showDialog(this, 1) { deletionViewModel.deleteItem(item) }
+    return true
+  }
 
 
   class ItemListMenuProvider(private val viewModel: ItemListViewModel? = null, fragment: ItemListFragment) : MenuProvider {

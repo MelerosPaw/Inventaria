@@ -94,8 +94,6 @@ class FramedPhotoViewerView @JvmOverloads constructor(
     private val pickPhotoLauncher: ActivityResultLauncher<PickVisualMediaRequest> =
       fragment.registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { destinationUri ->
         destinationUri?.let {
-          // TODO Melero 9/1/23: Guardar esto en el manual de Android Pure. Cuando solicitas un archivo, tienes que
-          //  pedir permisos persistentes de forma que la aplicación siga pudiendo leerlo pasado el reinicio del móvil.
           if (takePersistableUriPermission) {
             fragment.context?.contentResolver?.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
           }

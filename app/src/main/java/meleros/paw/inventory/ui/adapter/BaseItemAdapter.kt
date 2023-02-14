@@ -12,6 +12,7 @@ abstract class BaseItemAdapter(
   data: List<ItemVO>,
   protected var isInSelectionMode: Boolean,
   protected val onClickListener: (ItemVO) -> Unit,
+  protected val onLongClickListener: (ItemVO, View) -> Unit,
 ) : RecyclerView.Adapter<BaseItemAdapter.BaseItemViewHolder>() {
 
   companion object {
@@ -51,8 +52,9 @@ abstract class BaseItemAdapter(
 
   abstract class BaseItemViewHolder(
     itemView: View,
-    protected var onClickListener: (ItemVO) -> Unit,
-    protected var isSelectionModeEnabled: () -> Boolean,
+    protected val onClickListener: (ItemVO) -> Unit,
+    protected val isSelectionModeEnabled: () -> Boolean,
+    protected val onLongClickListener: (ItemVO, View) -> Unit,
   ): RecyclerView.ViewHolder(itemView) {
 
     abstract fun getSelectionCheckBox(): CheckBox
@@ -63,6 +65,15 @@ abstract class BaseItemAdapter(
           getSelectionCheckBox().isChecked = !item.isSelected
         } else {
           onClickListener(item)
+        }
+      }
+
+      itemView.setOnLongClickListener {
+        if (!isSelectionModeEnabled()) {
+          onLongClickListener(item, itemView)
+          true
+        } else {
+          false
         }
       }
 
