@@ -8,5 +8,10 @@
     <attr name="image" format="reference"/>
     <attr name="text" format="reference|string"/>
     <attr name="minified" format="boolean"/>
+    <attr name="textAlignment" format="enum">
+      <enum name="start" value="0" />
+      <enum name="center" value="1" />
+      <enum name="end" value="2" />
+    </attr>
   </declare-styleable>
 </resources>

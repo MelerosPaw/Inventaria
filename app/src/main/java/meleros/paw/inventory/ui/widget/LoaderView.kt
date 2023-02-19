@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import meleros.paw.inventory.R
 import meleros.paw.inventory.databinding.LoaderViewBinding
 
 class LoaderView @JvmOverloads constructor(
@@ -21,11 +23,14 @@ class LoaderView @JvmOverloads constructor(
         text = value
         isVisible = !value.isNullOrBlank()
       }
-
     }
 
   init {
     binding = LoaderViewBinding.inflate(LayoutInflater.from(context), this)
+    binding.loaderProgress.indeterminateDrawable.setColorFilter(
+      ContextCompat.getColor(context, R.color.primaryColor),
+      android.graphics.PorterDuff.Mode.MULTIPLY
+    )
   }
 
   fun setText(@StringRes textId: Int) {

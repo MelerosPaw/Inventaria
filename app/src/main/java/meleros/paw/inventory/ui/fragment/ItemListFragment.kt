@@ -2,12 +2,7 @@ package meleros.paw.inventory.ui.fragment
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -25,11 +20,11 @@ import meleros.paw.inventory.data.ItemListLayout
 import meleros.paw.inventory.databinding.FragmentItemListBinding
 import meleros.paw.inventory.databinding.SelectionFabMenuBinding
 import meleros.paw.inventory.manager.ConfirmationDialogManager
-import meleros.paw.inventory.ui.OverallLoader
 import meleros.paw.inventory.ui.SelectionModeListener
 import meleros.paw.inventory.ui.adapter.BaseItemAdapter
 import meleros.paw.inventory.ui.adapter.GridItemAdapter
 import meleros.paw.inventory.ui.adapter.ListItemAdapter
+import meleros.paw.inventory.ui.viewmodel.BaseViewModel
 import meleros.paw.inventory.ui.viewmodel.DeleteItemViewModel
 import meleros.paw.inventory.ui.viewmodel.ItemListViewModel
 import meleros.paw.inventory.ui.vo.ItemVO
@@ -43,6 +38,9 @@ class ItemListFragment : BaseFragment() {
   private val deletionViewModel: DeleteItemViewModel by activityViewModels()
   private var menuProvider: ItemListMenuProvider? = null
 
+  //region Overridden methods
+  override fun getBaseViewModel(): BaseViewModel = viewModel
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
     val binding = FragmentItemListBinding.inflate(inflater, container, false)
     val selectionBinding = SelectionFabMenuBinding.bind(binding.root)
@@ -53,7 +51,6 @@ class ItemListFragment : BaseFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    setUpLoader()
     setUpOptionMenu()
     setUpAddButton()
     setUpSelectionButtons()
@@ -65,14 +62,7 @@ class ItemListFragment : BaseFragment() {
     binding = null
     menuProvider?.let { activity?.removeMenuProvider(it) }
   }
-
-  private fun setUpLoader() {
-    viewModel.wipLiveData.observe(viewLifecycleOwner) {
-      it.get()?.let { state ->
-        (activity as? OverallLoader)?.updateState(state)
-      }
-    }
-  }
+  //endregion
 
   private fun setUpAddButton() {
     binding?.btnCreateItem?.setOnClickListener { onFabClicked() }

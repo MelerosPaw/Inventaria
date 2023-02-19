@@ -99,7 +99,7 @@ class FramedPhotoViewerView @JvmOverloads constructor(
           }
           onPhotoObtainedListener(Origin.FILE_SYSTEM, it)
         }
-      }
+      } 
 
     fun takePhoto(context: Context) {
       picturesTakenUri = PicturesTakenFileProvider.getUriForNewPicture(context)

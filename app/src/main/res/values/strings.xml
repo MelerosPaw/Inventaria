@@ -31,6 +31,7 @@
   <string name="close_selection_mode">Dejar de seleccionar</string>
   <string name="no">No</string>
   <string name="yes">Sí</string>
+  <string name="product_photo">Foto del producto</string>
 
   <plurals name="delete_item_cofirmation_message">
     <item quantity="one">¿Seguro que quieres eliminar este objeto?</item>

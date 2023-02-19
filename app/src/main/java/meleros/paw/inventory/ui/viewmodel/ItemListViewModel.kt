@@ -12,22 +12,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import meleros.paw.inventory.manager.ImageManager
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.data.ItemListLayout
 import meleros.paw.inventory.data.ItemListSorting
-import meleros.paw.inventory.data.ItemListSorting.ALPHABETICALLY
-import meleros.paw.inventory.data.ItemListSorting.ALPHABETICALLY_REVERSED
-import meleros.paw.inventory.data.ItemListSorting.GREATER_QUANTITY
-import meleros.paw.inventory.data.ItemListSorting.LESS_QUANTITY
-import meleros.paw.inventory.data.ItemListSorting.MOST_RECENT_FIRST
-import meleros.paw.inventory.data.ItemListSorting.OLDEST_FIRST
+import meleros.paw.inventory.data.ItemListSorting.*
 import meleros.paw.inventory.data.mapper.toBo
 import meleros.paw.inventory.data.mapper.toVo
 import meleros.paw.inventory.data.usecase.UCGetItems
 import meleros.paw.inventory.extension.ITEM_LIST_LAYOUT
 import meleros.paw.inventory.extension.ITEM_LIST_SORTING
 import meleros.paw.inventory.extension.dataStore
+import meleros.paw.inventory.manager.ImageManager
 import meleros.paw.inventory.ui.vo.ItemVO
 import java.io.IOException
 
@@ -64,13 +59,17 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
   init {
     // Escucha las preferencias y las guarda para cuando cambie la lista, poder volver a aplicarlas sin que tengan que
     // cambiar. Tal vez debería guardar los valores que nos interesan en lugar de las preferencias enteras.
-    doWork(false) { // TODO Melero 28/1/23: Por algún puto motivo no entiende que esto debe ser en un hilo secundario para que sea cargando
+    doWork {
       dataStore.data
         .catch { onErrorWhileReadingPreferences(it) }
         .collect { preferences ->
-          doWork {
+          withContext(Dispatchers.Default) {
             this@ItemListViewModel.preferences = preferences
-            currentVOs?.let { items -> postItemList(preferences, items) }
+            currentVOs?.let { vos ->
+              postItemList(preferences, vos)?.let { update ->
+                withContext(Dispatchers.Main) { _itemListLiveData.value = update }
+              }
+            }
           }
         }
     }
@@ -83,11 +82,18 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
    */
   fun loadItems() {
     doWork {
+      setLoading(true, "Cargando items")
       UCGetItems(database)()
         .mapToVO()
         .collect() { vos ->
+          setLoading(true, "Actualizando lista")
           currentVOs = vos
-          postItemList(preferences, vos)
+          postItemList(preferences, vos)?.let { update ->
+            withContext(Dispatchers.Main) {
+              _itemListLiveData.value = update
+              setLoading(false)
+            }
+          } ?: setLoading(false)
         }
     }
   }
@@ -193,9 +199,8 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
     return ItemListLayout.values()[layout]
   }
 
-  private suspend fun postItemList(preferences: Preferences?, items: List<ItemVO>) {
-    preferences?.let { _itemListLiveData.value = processItems(it, items) }
-  }
+  private suspend fun postItemList(preferences: Preferences?, items: List<ItemVO>): ItemListUpdate? =
+    preferences?.let { processItems(it, items) }
 
   private fun onErrorWhileReadingPreferences(it: Throwable) {
     if (it is IOException) {
