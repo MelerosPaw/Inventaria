@@ -2,12 +2,7 @@ package meleros.paw.inventory.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -21,7 +16,7 @@ import meleros.paw.inventory.ui.viewmodel.DeleteItemViewModel
 import meleros.paw.inventory.ui.viewmodel.ItemDetailViewModel
 import meleros.paw.inventory.ui.vo.ItemVO
 import java.lang.ref.WeakReference
-import java.util.Collections
+import java.util.*
 
 class ItemDetailFragment : BaseFragment() {
 
@@ -30,6 +25,9 @@ class ItemDetailFragment : BaseFragment() {
   private val viewModel: ItemDetailViewModel by viewModels()
   private val deletionViewModel: DeleteItemViewModel by viewModels()
   private var menuProvider: MenuProvider? = null
+
+  //region Overridden methods
+  override fun getBaseViewModel(): BaseViewModel = viewModel
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -65,6 +63,7 @@ class ItemDetailFragment : BaseFragment() {
     this.binding = null
     menuProvider?.let { activity?.removeMenuProvider(it) }
   }
+  //endregion
 
   private fun setUpMenu() {
     val menuProvider = ItemDetailMenuProvider(this)

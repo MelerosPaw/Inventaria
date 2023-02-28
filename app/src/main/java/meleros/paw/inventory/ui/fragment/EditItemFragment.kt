@@ -15,6 +15,7 @@ import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.databinding.FragmentEditItemBinding
 import meleros.paw.inventory.extension.whenTrue
 import meleros.paw.inventory.ui.TitleHolder
+import meleros.paw.inventory.ui.viewmodel.BaseViewModel
 import meleros.paw.inventory.ui.viewmodel.ItemEditionViewModel
 import meleros.paw.inventory.ui.widget.FramedPhotoViewerView
 
@@ -25,7 +26,9 @@ class EditItemFragment : BaseFragment() {
   private val photoManager = FramedPhotoViewerView.Manager(this) { origin, uri -> saveAndShowImage(origin, uri) }
   private val args: EditItemFragmentArgs by navArgs()
 
-  //region Public methods
+  //region Overridden methods
+  override fun getBaseViewModel(): BaseViewModel = viewModel
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
     val binding = FragmentEditItemBinding.inflate(inflater, container, false)
     this.binding = binding
@@ -63,12 +66,13 @@ class EditItemFragment : BaseFragment() {
 
   private fun tryAndSetUpEditionMode(isInEditionMode: Boolean, creationDate: Long) {
     if (isInEditionMode) {
-      val title: String = getString(R.string.edit_item_fragment_label, args.itemName)
+      val itemName = args.itemName.orEmpty()
+      val title: String = getString(R.string.edit_item_fragment_label, itemName)
       (activity as? TitleHolder)?.setTitleInToolbar(title)
       viewModel.itemEditionLiveData.observe(viewLifecycleOwner) {
         drawItem(it)
       }
-      viewModel.loadItemForEdition(creationDate)
+      viewModel.loadItemForEdition(creationDate, itemName)
     }
   }
 

@@ -4,13 +4,9 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import meleros.paw.inventory.manager.ImageManager
 import meleros.paw.inventory.bo.Item
-import meleros.paw.inventory.data.usecase.UCCreateItems
-import meleros.paw.inventory.data.usecase.UCEditItem
-import meleros.paw.inventory.data.usecase.UCGetItem
-import meleros.paw.inventory.data.usecase.UCGetItemDBO
-import meleros.paw.inventory.data.usecase.UCGetItemDBOFlow
+import meleros.paw.inventory.data.usecase.*
+import meleros.paw.inventory.manager.ImageManager
 import meleros.paw.inventory.ui.Event
 import meleros.paw.inventory.ui.widget.FramedPhotoViewerView
 
@@ -30,13 +26,14 @@ class ItemEditionViewModel(app: Application): BaseViewModel(app) {
   var isInEditionMode: Boolean = false
   var itemBeingEdited: Item? = null
 
-  fun loadItemForEdition(creationDate: Long) {
-    doWork {
+  fun loadItemForEdition(creationDate: Long, itemName: String) {
+    doWork(true, "Editando $itemName") {
       if (isInEditionMode) {
         UCGetItem(UCGetItemDBOFlow(database))(creationDate).collect { item ->
           item?.let {
             itemBeingEdited = it
             _itemEditionLiveData.value = it
+            setLoading(false)
           }
         }
       }
@@ -56,7 +53,7 @@ class ItemEditionViewModel(app: Application): BaseViewModel(app) {
   }
 
   fun createItem(name: CharSequence, description: CharSequence, quantity: Int, imagePath: CharSequence?) {
-    doWork {
+    doWork(true, "Guardando $name") {
       val creationTime = System.currentTimeMillis()
       val item = Item(name.toString(), description.toString(), quantity, creationTime, imagePath?.toString())
       val created = UCCreateItems(database)(item)
@@ -65,7 +62,7 @@ class ItemEditionViewModel(app: Application): BaseViewModel(app) {
   }
 
   fun modifyItem(name: CharSequence, description: CharSequence, quantity: Int, imagePath: CharSequence?) {
-    doWork {
+    doWork(true, "Actualizando $name") {
       if (isInEditionMode && isValidCreationDate(creationDateForEdition)) {
         val item = Item(name.toString(), description.toString(), quantity, creationDateForEdition, imagePath?.toString())
         val created = UCEditItem(database, UCGetItemDBO(database))(item)

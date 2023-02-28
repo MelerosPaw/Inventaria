@@ -5,9 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import meleros.paw.inventory.InventoryApp
 import meleros.paw.inventory.data.db.InventoryDB
 import meleros.paw.inventory.ui.Event
@@ -27,30 +25,26 @@ open class BaseViewModel(app: Application): AndroidViewModel(app) {
     dispatcher: CoroutineDispatcher? = null,
     block: suspend () -> Unit,
   ) {
+    if (loading) {
+      setLoading(true, message)
+    }
+
     viewModelScope.launch(dispatcher ?: Dispatchers.Main) {
+      delay(2000L)
+      block()
+
       if (loading) {
-        setLoading(dispatcher, true, message)
-        block()
-        setLoading(dispatcher, false, message)
-      } else {
-        block()
+        withContext(Dispatchers.Main) {
+          setLoading(false, null)
+        }
       }
     }
   }
 
-  private fun setLoading(dispatcher: CoroutineDispatcher?, isLoading: Boolean, message: CharSequence?) {
+  protected fun setLoading(isLoading: Boolean, message: CharSequence? = null) {
     val state = if (isLoading) { LoadingState.Loading(message) } else { LoadingState.NotLoading()}
     val event = Event(state)
-
-    if (dispatcher != Dispatchers.Main) {
-      _wipLiveData.value = event
-    } else {
-      _wipLiveData.postValue(event)
-    }
-  }
-
-  protected fun stopWorking() {
-    _wipLiveData.value = Event(LoadingState.NotLoading())
+    _wipLiveData.value = event
   }
 
   sealed class LoadingState(val message: CharSequence? = null) {

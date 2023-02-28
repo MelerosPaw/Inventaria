@@ -21,8 +21,6 @@
     android:id="@+id/loader__progress"
     android:layout_width="70dp"
     android:layout_height="70dp"
-    android:progressTint="@color/primaryColor"
-    android:progressTintMode="src_in"
     app:layout_constraintBottom_toTopOf="@id/loader__label__message"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
