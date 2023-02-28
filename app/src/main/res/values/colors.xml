@@ -16,4 +16,5 @@
   <color name="onPrimaryColor">@color/white</color>
   <color name="secondaryColor">#445E6D</color>
   <color name="secondaryVariantColor">#4D64E1</color>
+  <color name="onSecondaryColor">#FFFFFF</color>
 </resources>

@@ -103,11 +103,13 @@ class ItemListFragment : BaseFragment() {
 
   private fun SelectionFabMenuBinding.setUpOnDeleteItemsButton() {
     btnDeleteItems.setOnClickListener {
-      (binding?.listItems?.adapter as? BaseItemAdapter)?.let {
-        viewModel.getSelectedItemCount()?.let {
-          ConfirmationDialogManager().showDialog(this@ItemListFragment, it) {
-            val itemsToDelete = viewModel.getSelectedItems()
-            deletionViewModel.deleteItems(itemsToDelete)
+      if (viewModel.isAnyItemsSelected()) {
+        (binding?.listItems?.adapter as? BaseItemAdapter)?.let {
+          viewModel.getSelectedItemCount()?.let {
+            ConfirmationDialogManager().showConfirmItemRemovalDialog(this@ItemListFragment, it) {
+              val itemsToDelete = viewModel.getSelectedItems()
+              deletionViewModel.deleteItems(itemsToDelete)
+            }
           }
         }
       }
@@ -299,7 +301,7 @@ class ItemListFragment : BaseFragment() {
   }
 
   private fun onContextMenuDeleteClicked(item: ItemVO): Boolean {
-    ConfirmationDialogManager().showDialog(this, 1) { deletionViewModel.deleteItem(item) }
+    ConfirmationDialogManager().showConfirmItemRemovalDialog(this, 1) { deletionViewModel.deleteItem(item) }
     return true
   }
 

@@ -15,13 +15,19 @@ import kotlinx.coroutines.withContext
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.data.ItemListLayout
 import meleros.paw.inventory.data.ItemListSorting
-import meleros.paw.inventory.data.ItemListSorting.*
+import meleros.paw.inventory.data.ItemListSorting.ALPHABETICALLY
+import meleros.paw.inventory.data.ItemListSorting.ALPHABETICALLY_REVERSED
+import meleros.paw.inventory.data.ItemListSorting.GREATER_QUANTITY
+import meleros.paw.inventory.data.ItemListSorting.LESS_QUANTITY
+import meleros.paw.inventory.data.ItemListSorting.MOST_RECENT_FIRST
+import meleros.paw.inventory.data.ItemListSorting.OLDEST_FIRST
 import meleros.paw.inventory.data.mapper.toBo
 import meleros.paw.inventory.data.mapper.toVo
 import meleros.paw.inventory.data.usecase.UCGetItems
 import meleros.paw.inventory.extension.ITEM_LIST_LAYOUT
 import meleros.paw.inventory.extension.ITEM_LIST_SORTING
 import meleros.paw.inventory.extension.dataStore
+import meleros.paw.inventory.extension.isTrue
 import meleros.paw.inventory.manager.ImageManager
 import meleros.paw.inventory.ui.vo.ItemVO
 import java.io.IOException
@@ -88,6 +94,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
         .collect() { vos ->
           setLoading(true, "Actualizando lista")
           currentVOs = vos
+
           postItemList(preferences, vos)?.let { update ->
             withContext(Dispatchers.Main) {
               _itemListLiveData.value = update
@@ -151,6 +158,8 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
       }
     }
   }
+
+  fun isAnyItemsSelected(): Boolean = currentVOs?.any { it.isSelected }.isTrue()
 
   fun getSelectedItems(): List<Item> =
     currentVOs?.mapNotNull { vo -> vo.takeIf { vo.isSelected }?.toBo() }.orEmpty()

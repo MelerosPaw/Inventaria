@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.data.usecase.*
+import meleros.paw.inventory.extension.isTrue
 import meleros.paw.inventory.manager.ImageManager
 import meleros.paw.inventory.ui.Event
 import meleros.paw.inventory.ui.widget.FramedPhotoViewerView
@@ -72,6 +73,11 @@ class ItemEditionViewModel(app: Application): BaseViewModel(app) {
   }
 
   fun getUriFromString(path: CharSequence): Uri? = ImageManager.getUriFromString(path, getApplication())
+
+  fun hasItemInfoBeenModified(name: CharSequence, description: CharSequence, quantity: Int?): Boolean =
+    isInEditionMode && itemBeingEdited?.let {
+      it.name != name.toString() || it.description != description.toString() || it.quantity != quantity
+    }.isTrue()
 
   private fun isValidCreationDate(creationDate: Long): Boolean = Item.isValidCreationDate(creationDate)
 }

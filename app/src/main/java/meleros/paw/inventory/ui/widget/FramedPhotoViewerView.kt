@@ -50,6 +50,8 @@ class FramedPhotoViewerView @JvmOverloads constructor(
     }
   }
 
+  fun hasImage(): Boolean = binding.framedImageViewerImgItemPicture.drawable != null
+
   private fun FramedImageViewerViewBinding.minifyButtons() {
     framedImageViewerLabelSelectImage.run {
       setMinified(true)

@@ -7,13 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import meleros.paw.inventory.R
 import meleros.paw.inventory.bo.Item
 import meleros.paw.inventory.databinding.FragmentEditItemBinding
+import meleros.paw.inventory.extension.hasText
+import meleros.paw.inventory.extension.isGreaterThan
+import meleros.paw.inventory.extension.orNot
 import meleros.paw.inventory.extension.whenTrue
+import meleros.paw.inventory.manager.ConfirmationDialogManager
 import meleros.paw.inventory.ui.TitleHolder
 import meleros.paw.inventory.ui.viewmodel.BaseViewModel
 import meleros.paw.inventory.ui.viewmodel.ItemEditionViewModel
@@ -37,6 +42,9 @@ class EditItemFragment : BaseFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+
+    setUpOnBackPressed()
+
     binding?.editDescription?.let {
       it.inputType = it.inputType or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
     }
@@ -47,6 +55,29 @@ class EditItemFragment : BaseFragment() {
 
     setUpViews(isInEditionMode)
     tryAndSetUpEditionMode(isInEditionMode, creationDateForEdition)
+  }
+
+  private fun setUpOnBackPressed() {
+    activity?.onBackPressedDispatcher?.run {
+      addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          if (isInTheMiddleOfCreating() || isInTheMiddleOfEditing()) {
+            ConfirmationDialogManager().showExitWithoutSavingDialog(this@EditItemFragment) { proceed() }
+          } else {
+            proceed()
+          }
+        }
+
+        private fun isInTheMiddleOfCreating() = !viewModel.isInEditionMode && hasFilledSomeData()
+
+        private fun isInTheMiddleOfEditing() = hasModifiedSomeData()
+
+        private fun proceed() {
+          isEnabled = false
+          onBackPressed()
+        }
+      })
+    }
   }
 
   override fun onDestroyView() {
@@ -143,5 +174,20 @@ class EditItemFragment : BaseFragment() {
   private fun FragmentEditItemBinding.showImage(imageUri: Uri) {
     imageViewerPhoto.setImageURI(imageUri)
   }
+
+  private fun hasFilledSomeData(): Boolean = binding?.run {
+    val hasName = editItemName.hasText()
+    val hasDescription = editDescription.hasText()
+    val hasQuantity = pickerQuanitity.amount isGreaterThan 1
+    val hasPicture = imageViewerPhoto.hasImage()
+    hasName || hasDescription || hasQuantity || hasPicture
+  }.orNot()
+
+  private fun hasModifiedSomeData(): Boolean = binding?.run {
+    val name = editItemName.text
+    val description = editDescription.text
+    val quantity = pickerQuanitity.amount
+    viewModel.hasItemInfoBeenModified(name, description, quantity)
+  }.orNot()
   //endregion
 }

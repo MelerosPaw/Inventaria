@@ -32,6 +32,8 @@
   <string name="no">No</string>
   <string name="yes">Sí</string>
   <string name="product_photo">Foto del producto</string>
+  <string name="exit_without_saving_confirmation_title">¿Salir sin guardar?</string>
+  <string name="exit_without_saving_confirmation_message">¿Seguro que quieres salir sin terminar?</string>
 
   <plurals name="delete_item_cofirmation_message">
     <item quantity="one">¿Seguro que quieres eliminar este objeto?</item>

@@ -90,7 +90,7 @@ class ItemDetailFragment : BaseFragment() {
   }
 
   private fun openConfirmationDialog() {
-    ConfirmationDialogManager().showDialog(this, 1, ::onConfirmItemRemoval)
+    ConfirmationDialogManager().showConfirmItemRemovalDialog(this, 1, ::onConfirmItemRemoval)
   }
 
   private fun onConfirmItemRemoval() {

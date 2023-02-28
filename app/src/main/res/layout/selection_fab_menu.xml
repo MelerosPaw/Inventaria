@@ -19,22 +19,20 @@
 
   <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
     android:id="@+id/btn__delete_items"
+    style="@style/SelectionOption"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/fab_margin"
-    android:layout_marginEnd="@dimen/fab_margin"
     android:text="@string/delete_items"
     android:visibility="gone"
     app:icon="@drawable/ic_delete_items"
     app:layout_constraintBottom_toTopOf="@id/btn__deselect_all"
-    app:layout_constraintEnd_toEndOf="parent"/>
+    app:layout_constraintEnd_toEndOf="parent" />
 
   <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
     android:id="@+id/btn__deselect_all"
+    style="@style/SelectionOption"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/fab_margin"
-    android:layout_marginEnd="@dimen/fab_margin"
     android:text="@string/clear_selection"
     android:visibility="gone"
     app:icon="@drawable/ic_deselect_all"
@@ -43,10 +41,9 @@
 
   <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
     android:id="@+id/btn__select_all"
+    style="@style/SelectionOption"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/fab_margin"
-    android:layout_marginEnd="@dimen/fab_margin"
     android:text="@string/select_everything"
     android:visibility="gone"
     app:icon="@drawable/ic_add"
