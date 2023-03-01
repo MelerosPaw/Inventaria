@@ -21,8 +21,8 @@ class ItemDetailViewModel(app: Application): BaseViewModel(app) {
 
   var itemDisplayedOnDetail: Item? = null
 
-  fun loadItemForDetail(creationDate: Long) {
-    doWork {
+  fun loadItemForDetail(creationDate: Long, itemName: String) {
+    doWork(true, "Cargando $itemName") {
       UCGetItem(UCGetItemDBOFlow(database))(creationDate).collect { item ->
         item?.let {
           itemDisplayedOnDetail = it

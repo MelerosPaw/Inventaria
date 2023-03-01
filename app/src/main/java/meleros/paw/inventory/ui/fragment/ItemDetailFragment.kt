@@ -31,7 +31,7 @@ class ItemDetailFragment : BaseFragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    viewModel.loadItemForDetail(args.itemCreationDate)
+    viewModel.loadItemForDetail(args.itemCreationDate, args.itemName)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

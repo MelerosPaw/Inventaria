@@ -41,7 +41,7 @@ open class BaseViewModel(app: Application): AndroidViewModel(app) {
     }
   }
 
-  protected fun setLoading(isLoading: Boolean, message: CharSequence? = null) {
+  fun setLoading(isLoading: Boolean, message: CharSequence? = null) {
     val state = if (isLoading) { LoadingState.Loading(message) } else { LoadingState.NotLoading()}
     val event = Event(state)
     _wipLiveData.value = event

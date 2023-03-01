@@ -58,26 +58,24 @@ class EditItemFragment : BaseFragment() {
   }
 
   private fun setUpOnBackPressed() {
-    activity?.onBackPressedDispatcher?.run {
-      addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-          if (isInTheMiddleOfCreating() || isInTheMiddleOfEditing()) {
-            ConfirmationDialogManager().showExitWithoutSavingDialog(this@EditItemFragment) { proceed() }
-          } else {
-            proceed()
-          }
+    activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+      override fun handleOnBackPressed() {
+        if (isInTheMiddleOfCreating() || isInTheMiddleOfEditing()) {
+          ConfirmationDialogManager().showExitWithoutSavingDialog(this@EditItemFragment) { proceed() }
+        } else {
+          proceed()
         }
+      }
 
-        private fun isInTheMiddleOfCreating() = !viewModel.isInEditionMode && hasFilledSomeData()
+      private fun isInTheMiddleOfCreating() = !viewModel.isInEditionMode && hasFilledSomeData()
 
-        private fun isInTheMiddleOfEditing() = hasModifiedSomeData()
+      private fun isInTheMiddleOfEditing() = hasModifiedSomeData()
 
-        private fun proceed() {
-          isEnabled = false
-          onBackPressed()
-        }
-      })
-    }
+      private fun proceed() {
+        isEnabled = false
+        activity?.onBackPressedDispatcher?.onBackPressed()
+      }
+    })
   }
 
   override fun onDestroyView() {

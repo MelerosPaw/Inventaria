@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -69,15 +68,25 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
       dataStore.data
         .catch { onErrorWhileReadingPreferences(it) }
         .collect { preferences ->
-          withContext(Dispatchers.Default) {
-            this@ItemListViewModel.preferences = preferences
-            currentVOs?.let { vos ->
-              postItemList(preferences, vos)?.let { update ->
-                withContext(Dispatchers.Main) { _itemListLiveData.value = update }
-              }
-            }
-          }
+          this@ItemListViewModel.preferences = preferences
+          currentVOs?.let { vos -> updateItemList(preferences, vos) }
         }
+    }
+  }
+
+  private suspend fun updateItemList(preferences: Preferences?, items: List<ItemVO>, forceUpdate: Boolean = false) {
+    withContext(Dispatchers.Main) {
+      setLoading(true, "Actualizando lista")
+      preferences
+        ?.let { processItems(it, items, forceUpdate) }
+        ?.let { update -> postItemList(update) }
+        ?: setLoading(false)
+    }
+  }
+
+  private suspend fun postItemList(update: ItemListUpdate) {
+    withContext(Dispatchers.Main) {
+      _itemListLiveData.value = update
     }
   }
 
@@ -87,20 +96,13 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
    * haya que volver a solicitarla ni depender de la lista que hay en el adapter.
    */
   fun loadItems() {
-    doWork {
-      setLoading(true, "Cargando items")
+    doWork(true, "Cargando la lista") {
       UCGetItems(database)()
         .mapToVO()
         .collect() { vos ->
           setLoading(true, "Actualizando lista")
           currentVOs = vos
-
-          postItemList(preferences, vos)?.let { update ->
-            withContext(Dispatchers.Main) {
-              _itemListLiveData.value = update
-              setLoading(false)
-            }
-          } ?: setLoading(false)
+          updateItemList(preferences, vos, true)
         }
     }
   }
@@ -150,7 +152,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
 
   //region Private methods
   private fun changeItemListLayout(layout: ItemListLayout) {
-    doWork(false) {
+    doWork(true, "Reorganizando lista") {
       dataStore.edit {
         if (getLayoutType(it) != layout) {
           it[ITEM_LIST_LAYOUT] = layout.ordinal
@@ -172,7 +174,7 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
   }
 
   private fun changeSorting(provideSortingType: (oldSorting: ItemListSorting) -> ItemListSorting) {
-    doWork(false) {
+    doWork(true, "Reordenando lista") {
       dataStore.edit {
         val currentSorting = getSortingType(it)
         val newSorting = provideSortingType(currentSorting)
@@ -187,29 +189,29 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
   }
 
   /** If the sorting type has changed, returns the item list sorted and stores it in cache. Else, returns null. */
-  private fun applySorting(sorting: ItemListSorting, items: List<ItemVO>): List<ItemVO>? =
-    items
-      .takeIf { currentSorting != sorting }
-      ?.let { vos ->
-        currentSorting = sorting
+  private fun applySorting(
+    sorting: ItemListSorting,
+    items: List<ItemVO>,
+    forceUpdate: Boolean = false,
+  ): List<ItemVO>? = items
+    .takeIf { forceUpdate || currentSorting != sorting }
+    ?.let { vos ->
+      currentSorting = sorting
 
-        when (sorting) {
-          ALPHABETICALLY -> vos.sortedBy { it.name }
-          ALPHABETICALLY_REVERSED -> vos.sortedByDescending { it.name }
-          LESS_QUANTITY -> vos.sortedWith(QuantityComparator(false))
-          GREATER_QUANTITY -> vos.sortedWith(QuantityComparator(true))
-          MOST_RECENT_FIRST -> vos.sortedByDescending { it.creationDate }
-          OLDEST_FIRST -> vos.sortedBy { it.creationDate }
-        }.also { currentVOs = it }
-      }
+      when (sorting) {
+        ALPHABETICALLY -> vos.sortedBy { it.name }
+        ALPHABETICALLY_REVERSED -> vos.sortedByDescending { it.name }
+        LESS_QUANTITY -> vos.sortedWith(QuantityComparator(false))
+        GREATER_QUANTITY -> vos.sortedWith(QuantityComparator(true))
+        MOST_RECENT_FIRST -> vos.sortedByDescending { it.creationDate }
+        OLDEST_FIRST -> vos.sortedBy { it.creationDate }
+      }.also { currentVOs = it }
+    }
 
   private fun getLayoutType(preferences: Preferences): ItemListLayout {
     val layout = preferences[ITEM_LIST_LAYOUT] ?: 0
     return ItemListLayout.values()[layout]
   }
-
-  private suspend fun postItemList(preferences: Preferences?, items: List<ItemVO>): ItemListUpdate? =
-    preferences?.let { processItems(it, items) }
 
   private fun onErrorWhileReadingPreferences(it: Throwable) {
     if (it is IOException) {
@@ -221,16 +223,16 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
   }
 
   private suspend fun processItems(
-    it: Preferences,
+    preferences: Preferences,
     items: List<ItemVO>,
-    dispatcher: CoroutineDispatcher = Dispatchers.Default,
-  ): ItemListUpdate = withContext(dispatcher) {
+    forceUpdate: Boolean = false,
+  ): ItemListUpdate = withContext(Dispatchers.Default) {
     // Obtiene la disposición de la lista
-    val layout = getLayoutType(it)
+    val layout = getLayoutType(preferences)
 
     // Ordena la lista (solo si ha cambiado)
-    val sorting = getSortingType(it)
-    val sortedList = applySorting(sorting, items)
+    val sorting = getSortingType(preferences)
+    val sortedList = applySorting(sorting, items, forceUpdate)
 
     ItemListUpdate(layout, sortedList, currentVOs)
   }

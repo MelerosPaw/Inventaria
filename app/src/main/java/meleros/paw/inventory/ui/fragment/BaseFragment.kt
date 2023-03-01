@@ -30,7 +30,6 @@ abstract class BaseFragment: Fragment() {
   }
 
   private fun setUpLoader() {
-    // TODO Melero 19/02/2023: Hay que comprobar que, al entrar en edición, el estado de carga es no cargando
     getBaseViewModel().wipLiveData.observe(viewLifecycleOwner) {
       it.get()?.let { state ->
         (activity as? OverallLoader)?.updateState(state)

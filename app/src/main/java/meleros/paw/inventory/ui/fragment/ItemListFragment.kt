@@ -154,6 +154,8 @@ class ItemListFragment : BaseFragment() {
       } else {
         modifyAdapter(layout, items)
       }
+
+      viewModel.setLoading(false)
     }
   }
 
