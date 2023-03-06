@@ -1,4 +1,4 @@
-package meleros.paw.inventory.ui.fragment
+package meleros.paw.inventory.ui.itemdetail
 
 import android.net.Uri
 import android.os.Bundle
@@ -6,14 +6,13 @@ import android.view.*
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
 import meleros.paw.inventory.R
 import meleros.paw.inventory.databinding.FragmentItemDetailBinding
 import meleros.paw.inventory.manager.ConfirmationDialogManager
 import meleros.paw.inventory.ui.TitleHolder
+import meleros.paw.inventory.ui.fragment.BaseFragment
 import meleros.paw.inventory.ui.viewmodel.BaseViewModel
 import meleros.paw.inventory.ui.viewmodel.DeleteItemViewModel
-import meleros.paw.inventory.ui.viewmodel.ItemDetailViewModel
 import meleros.paw.inventory.ui.vo.ItemVO
 import java.lang.ref.WeakReference
 import java.util.*
@@ -21,17 +20,38 @@ import java.util.*
 class ItemDetailFragment : BaseFragment() {
 
   private var binding: FragmentItemDetailBinding? = null
-  private val args: ItemDetailFragmentArgs by navArgs()
   private val viewModel: ItemDetailViewModel by viewModels()
   private val deletionViewModel: DeleteItemViewModel by viewModels()
   private var menuProvider: MenuProvider? = null
+
+  companion object {
+
+    private const val CREATION_DATE = "CREATION_DATE"
+    private const val ITEM_NAME = "ITEM_NAME"
+
+    fun newInstance(creationDate: Long, itemName: String): ItemDetailFragment {
+      val args = Bundle().apply {
+        putLong(CREATION_DATE, creationDate)
+        putString(ITEM_NAME, itemName)
+      }
+
+      return ItemDetailFragment().apply {
+        arguments = args
+      }
+    }
+  }
 
   //region Overridden methods
   override fun getBaseViewModel(): BaseViewModel = viewModel
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    viewModel.loadItemForDetail(args.itemCreationDate, args.itemName)
+    val creationDate = arguments?.getLong(CREATION_DATE)
+    val itemName = arguments?.getString(ITEM_NAME)
+
+    if (creationDate != null && itemName != null) {
+      viewModel.loadItemForDetail(creationDate, itemName)
+    }
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -43,7 +63,8 @@ class ItemDetailFragment : BaseFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    setLoading(BaseViewModel.LoadingState.Loading("Cargando ${args.itemName}"))
+    val itemName = viewModel.itemName ?: ""
+    setLoading(BaseViewModel.LoadingState.Loading("Cargando $itemName"))
 
     binding?.run {
       viewModel.itemDetailLiveData.observe(viewLifecycleOwner) { item ->
@@ -76,7 +97,7 @@ class ItemDetailFragment : BaseFragment() {
   }
 
   private fun navigateToEdit(creationDate: Long, name: String) {
-    navigate(ItemDetailFragmentDirections.actionDetailToEdition(creationDate, name))
+    navigate(ItemDetailViewPagerFragmentDirections.actionDetailToEdition(creationDate, name))
   }
 
   private fun FragmentItemDetailBinding.loadPicture(imageUri: Uri?) {

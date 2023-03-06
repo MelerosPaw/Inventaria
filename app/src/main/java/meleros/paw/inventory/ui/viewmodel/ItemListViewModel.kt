@@ -79,14 +79,8 @@ class ItemListViewModel(app: Application): BaseViewModel(app) {
       setLoading(true, "Actualizando lista")
       preferences
         ?.let { processItems(it, items, forceUpdate) }
-        ?.let { update -> postItemList(update) }
+        ?.let { update -> _itemListLiveData.value = update }
         ?: setLoading(false)
-    }
-  }
-
-  private suspend fun postItemList(update: ItemListUpdate) {
-    withContext(Dispatchers.Main) {
-      _itemListLiveData.value = update
     }
   }
 

@@ -17,7 +17,7 @@
 
     <action
       android:id="@+id/action_item_list_to_detail"
-      app:destination="@id/DetailItemFragment" />
+      app:destination="@id/detail_pager_fragment" />
 
   </fragment>
 
@@ -42,9 +42,9 @@
   </fragment>
 
   <fragment
-    android:id="@+id/DetailItemFragment"
-    android:name="meleros.paw.inventory.ui.fragment.ItemDetailFragment"
-    tools:layout="@layout/fragment_item_detail">
+    android:id="@+id/detail_pager_fragment"
+    android:name="meleros.paw.inventory.ui.itemdetail.ItemDetailViewPagerFragment"
+    tools:layout="@layout/fragment_detail_view_pager">
 
     <argument
       android:name="itemCreationDate"
