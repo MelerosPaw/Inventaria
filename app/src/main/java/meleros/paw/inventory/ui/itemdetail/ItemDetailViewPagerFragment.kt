@@ -9,6 +9,7 @@ import androidx.navigation.fragment.navArgs
 import meleros.paw.inventory.databinding.FragmentDetailViewPagerBinding
 import meleros.paw.inventory.ui.fragment.BaseFragment
 import meleros.paw.inventory.ui.viewmodel.BaseViewModel
+import meleros.paw.inventory.ui.vo.DetailViewPagerInfo
 
 class ItemDetailViewPagerFragment : BaseFragment() {
 
@@ -18,6 +19,11 @@ class ItemDetailViewPagerFragment : BaseFragment() {
 
   override fun getBaseViewModel(): BaseViewModel = viewModel
 
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    viewModel.loadStartingPosition(args.itemCreationDate)
+  }
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     binding = FragmentDetailViewPagerBinding.inflate(inflater, container, false)
     return binding?.root
@@ -25,6 +31,16 @@ class ItemDetailViewPagerFragment : BaseFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    binding?.pagerDetail?.adapter = ItemDetailPagerAdapter(this, args.itemCreationDate, args.itemName)
+    viewModel.startingPositionLiveData.observe(viewLifecycleOwner) { event ->
+      event.get()?.let(::setUpDetailViewPager)
+    }
+  }
+
+  private fun setUpDetailViewPager(viewPagerInfo: DetailViewPagerInfo) {
+    binding?.pagerDetail?.run {
+      adapter = ItemDetailPagerAdapter(this@ItemDetailViewPagerFragment, viewPagerInfo)
+      setCurrentItem(viewPagerInfo.startPosition, false)
+    }
+    viewModel.setLoading(false)
   }
 }

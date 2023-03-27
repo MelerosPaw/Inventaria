@@ -14,6 +14,7 @@ import meleros.paw.inventory.ui.fragment.BaseFragment
 import meleros.paw.inventory.ui.viewmodel.BaseViewModel
 import meleros.paw.inventory.ui.viewmodel.DeleteItemViewModel
 import meleros.paw.inventory.ui.vo.ItemVO
+import meleros.paw.inventory.ui.vo.MinimalItemInfo
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -29,10 +30,10 @@ class ItemDetailFragment : BaseFragment() {
     private const val CREATION_DATE = "CREATION_DATE"
     private const val ITEM_NAME = "ITEM_NAME"
 
-    fun newInstance(creationDate: Long, itemName: String): ItemDetailFragment {
+    fun newInstance(itemInfo: MinimalItemInfo): ItemDetailFragment {
       val args = Bundle().apply {
-        putLong(CREATION_DATE, creationDate)
-        putString(ITEM_NAME, itemName)
+        putLong(CREATION_DATE, itemInfo.creationDate)
+        putString(ITEM_NAME, itemInfo.name)
       }
 
       return ItemDetailFragment().apply {

@@ -1,19 +1,24 @@
 package meleros.paw.inventory.data.usecase
 
+import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import meleros.paw.inventory.bo.Item
+import meleros.paw.inventory.data.ItemListSorting
 import meleros.paw.inventory.data.db.InventoryDB
-import meleros.paw.inventory.data.db.ItemDBO
-import meleros.paw.inventory.data.mapper.toBo
+import meleros.paw.inventory.data.repository.ItemRepository
+import meleros.paw.inventory.ui.vo.ItemVO
 
-class UCGetItems(db: InventoryDB) {
+class UCGetItems(
+  private val db: InventoryDB,
+  private val repository: ItemRepository,
+) {
 
-  private val itemDao = db.itemDao()
-
-  suspend operator fun invoke(): Flow<List<Item>> = withContext(Dispatchers.Default) {
-    itemDao.getAllItems().map { it.map(ItemDBO::toBo) }
+  suspend operator fun invoke(
+    context: Context,
+    sorting: ItemListSorting,
+    forceUpdateSorting: Boolean = false,
+  ): Flow<List<ItemVO>> = withContext(Dispatchers.Default) {
+    repository.getItems(context, db, sorting, forceUpdateSorting)
   }
 }

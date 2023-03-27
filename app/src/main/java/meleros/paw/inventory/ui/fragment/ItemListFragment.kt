@@ -127,13 +127,13 @@ class ItemListFragment : BaseFragment() {
 
     // TODO Melero 31/12/22: Habría simplemente que actualizar la lista con el item nuevo, no volverla a pintar entera
 //    viewModel.itemEditionFinishedLiveData.observe(viewLifecycleOwner) { it.whenTrue(false) { viewModel.loadItems() } }
-
-    // Esta comprobación es necesaria porque creo que, como estamos creando el view model con la activity, no se
-    // destruye y se queda la lista que está guardada, actuando como caché. Si el view model se crease con el fragment,
-    // estaríamos obligados a tener que implementar una caché en repositorio.
-    if (viewModel.currentVOs == null) {
-      viewModel.loadItems()
-    }
+//
+//    // Esta comprobación es necesaria porque creo que, como estamos creando el view model con la activity, no se
+//    // destruye y se queda la lista que está guardada, actuando como caché. Si el view model se crease con el fragment,
+//    // estaríamos obligados a tener que implementar una caché en repositorio.
+//    if (viewModel.currentVOs == null) {
+//      viewModel.loadItems()
+//    }
   }
 
   private fun setUpOptionMenu() {
